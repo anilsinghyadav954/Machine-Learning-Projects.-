@@ -1,0 +1,109 @@
+[33mcommit 2cc477e267d9fd32326707f3a63760c0edf95d4a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author:     Anil Yadav <anilsinghyadav954@gmail.com>
+AuthorDate: Tue Sep 15 10:58:30 2026 +0530
+Commit:     Anil Yadav <anilsinghyadav954@gmail.com>
+CommitDate: Tue Sep 15 10:58:30 2026 +0530
+
+    Initial commit
+
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..5aa2ee5[m
+[1m--- /dev/null[m
+[1m+++ b/.gitignore[m
+[36m@@ -0,0 +1,12 @@[m
+[32m+[m[32m.idea/[m
+[32m+[m[32m.vscode/[m
+[32m+[m[32mnode_modules/[m
+[32m+[m[32m__pycache__/[m
+[32m+[m[32m*.pyc[m
+[32m+[m[32m.env[m
+[32m+[m[32m.env.*[m
+[32m+[m[32mdist/[m
+[32m+[m[32mbuild/[m
+[32m+[m[32m*.log[m
+[32m+[m[32m.DS_Store[m
+[32m+[m[32mThumbs.db[m
+\ No newline at end of file[m
+[1mdiff --git a/Assignment-5-MySQL b/Assignment-5-MySQL[m
+[1mnew file mode 160000[m
+[1mindex 0000000..d8613a3[m
+[1m--- /dev/null[m
+[1m+++ b/Assignment-5-MySQL[m
+[36m@@ -0,0 +1 @@[m
+[32m+[m[32mSubproject commit d8613a388c4fae6bea62ff9c546d6499284da99a[m
+[1mdiff --git a/Assignment_5Sol.txt b/Assignment_5Sol.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..2a0ce13[m
+[1m--- /dev/null[m
+[1m+++ b/Assignment_5Sol.txt[m
+[36m@@ -0,0 +1,293 @@[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > insert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102,  MySQL  localhost:33060+ ssl  rrgi  SQL > insert into employee (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Arun", 22, "IT", 68000, "Lucknow"),(104, "Anil", 21, "CSE", 70000, "Hydrabad"),(105, "Saurabh", 21, "CSD", 960000, "Sitapur"),(106, "Shivam", 21, "IT", 899999, "Jaunpur"),(107, "Krishna", 22, "HR", 78000, "Lucknow"),(108, "Adarsh", 22, "CSE", 69000, "Delhi"),(109, "Chandan", 21, "IT", 80000, "Ballia"),(110, "Sunil", 21, "IT", 90000, "Jaunpur");[m
+[32m+[m[32mERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi")' at l MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee;[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |[m
+[32m+[m[32m|    102 | Aman     |      20 | HR             |      65000 | Delhi    |[m
+[32m+[m[32m|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |[m
+[32m+[m[32m|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |[m
+[32m+[m[32m|    105 | Saurabh  |      21 | CSD            |     960000 | Sitapur  |[m
+[32m+[m[32m|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |[m
+[32m+[m[32m|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |[m
+[32m+[m[32m|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |[m
+[32m+[m[32m|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |[m
+[32m+[m[32m|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m10 rows in set (0.0008 sec)[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_name from employee where emp_city = "Sitapur";[m
+[32m+[m[32m+----------+[m
+[32m+[m[32m| emp_name |[m
+[32m+[m[32m+----------+[m
+[32m+[m[32m| Saurabh  |[m
+[32m+[m[32m+----------+[m
+[32m+[m[32m1 row in set (0.0007 sec)[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > update from employee set emp_salary = 10000000 where emp_name = "Saurabh";[m
+[32m+[m[32mERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from employee set emp_salary = 10000000 where emp_name = "Saurabh"' at line 1[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > update employee set emp_salary = 10000000 where emp_name = "Saurabh";[m
+[32m+[m[32mQuery OK, 1 row affected (0.0038 sec)[m
+[32m+[m
+[32m+[m[32mRows matched: 1  Changed: 1  Warnings: 0[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_name from employee where emp_city = "Sitapur";[m
+[32m+[m[32m+----------+[m
+[32m+[m[32m| emp_name |[m
+[32m+[m[32m+----------+[m
+[32m+[m[32m| Saurabh  |[m
+[32m+[m[32m+----------+[m
+[32m+[m[32m1 row in set (0.0007 sec)[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee;[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |[m
+[32m+[m[32m|    102 | Aman     |      20 | HR             |      65000 | Delhi    |[m
+[32m+[m[32m|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |[m
+[32m+[m[32m|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |[m
+[32m+[m[32m|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |[m
+[32m+[m[32m|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |[m
+[32m+[m[32m|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |[m
+[32m+[m[32m|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |[m
+[32m+[m[32m|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |[m
+[32m+[m[32m|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m10 rows in set (0.0007 sec)[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > update employee set emp_name = "XYZ" where emp_id=104;[m
+[32m+[m[32mQuery OK, 1 row affected (0.0042 sec)[m
+[32m+[m
+[32m+[m[32mRows matched: 1  Changed: 1  Warnings: 0[m
+[32m+[m[32m MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee;[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |[m
+[32m+[m[32m+--------+----------+---------+----------------+------------+----------+[m
+[32m+[m[32m|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |[m
+[32m+[m[32m|    102 | Aman     |      20 | HR             |      65000 | Delhi    |[m
+[32m+[m[32m|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |[m
+[32m+[m[32m|    104 | XYZ      |      21 | CSE            |      70000 | Hydrabad |[m
+[32m+[m[32m|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |[m
+[32m+[m[32m|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |[m
+[32m+[m[32m|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |[m
+[32m+[m[32m|    108 | Adarsh   |      22

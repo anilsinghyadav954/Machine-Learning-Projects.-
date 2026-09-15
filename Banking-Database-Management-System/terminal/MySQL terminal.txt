@@ -1,0 +1,828 @@
+MySQL Shell 8.0.46
+
+Copyright (c) 2016, 2026, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect root@localhost
+Creating a session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 8 (X protocol)
+Server version: 8.0.46 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:33060+ ssl  SQL > show databases
+                                 -> ;
++--------------------+
+| Database           |
++--------------------+
+| college            |
+| d_app              |
+| information_schema |
+| mysql              |
+| performance_schema |
+ MySQL  localhost:33060+ ssl  banking_db  SQL > show tables
+                                             -> ;
+Empty set (0.0050 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE branches (     branch_id INT PRIMARY KEY,     branch_code VARCHAR(10) UNIQUE NOT NULL,     branch_name VARCHAR(100) NOT NULL,     city VARCHAR(50) NOT NULL,     state VARCHAR(50) NOT NULL,     pincode VARCHAR(10),     address VARCHAR(255),     ifsc_code VARCHAR(20) UNIQUE NOT NULL,     phone VARCHAR(15),     manager_name VARCHAR(100),     opening_date DATE,     status VARCHAR(20) );
+Query OK, 0 rows affected (0.0929 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > desc branches
+                                             -> ;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| branch_id    | int          | NO   | PRI | NULL    |       |
+| branch_code  | varchar(10)  | NO   | UNI | NULL    |       |
+| branch_name  | varchar(100) | NO   |     | NULL    |       |
+| city         | varchar(50)  | NO   |     | NULL    |       |
+| state        | varchar(50)  | NO   |     | NULL    |       |
+| pincode      | varchar(10)  | YES  |     | NULL    |       |
+| address      | varchar(255) | YES  |     | NULL    |       |
+| ifsc_code    | varchar(20)  | NO   | UNI | NULL    |       |
+| phone        | varchar(15)  | YES  |     | NULL    |       |
+| manager_name | varchar(100) | YES  |     | NULL    |       |
+| opening_date | date         | YES  |     | NULL    |       |
+| status       | varchar(20)  | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+12 rows in set (0.0053 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE customers (     customer_id INT PRIMARY KEY,     customer_number VARCHAR(20) UNIQUE NOT NULL,     first_name VARCHAR(50) NOT NULL,     last_name VARCHAR(50) NOT NULL,     email VARCHAR(100) UNIQUE,     phone VARCHAR(15) UNIQUE,     date_of_birth DATE,     gender VARCHAR(10),     address VARCHAR(255),     city VARCHAR(50),     state VARCHAR(50),     pincode VARCHAR(10),     customer_since DATE,     customer_status VARCHAR(20) );
+Query OK, 0 rows affected (0.0726 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > show tables
+                                             -> ;
++----------------------+
+| Tables_in_banking_db |
++----------------------+
+| branches             |
+| customers            |
++----------------------+
+2 rows in set (0.0051 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE employees (     employee_id INT PRIMARY KEY,     employee_code VARCHAR(20) UNIQUE NOT NULL,     branch_id INT,     employee_name VARCHAR(100) NOT NULL,     job_role VARCHAR(50),     email VARCHAR(100) UNIQUE,     phone VARCHAR(15),     salary DECIMAL(12,2),     joining_date DATE,     status VARCHAR(20),      FOREIGN KEY (branch_id)         REFERENCES branches(branch_id) );
+Query OK, 0 rows affected (0.0642 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE accounts (     account_id INT PRIMARY KEY,     customer_id INT NOT NULL,     branch_id INT NOT NULL,     account_number VARCHAR(20)         UNIQUE NOT NULL,     account_type VARCHAR(30)         NOT NULL,     balance DECIMAL(15,2)         DEFAULT 0,     minimum_balance DECIMAL(15,2)         DEFAULT 0,     opened_date DATE,     status VARCHAR(20),     currency VARCHAR(10)         DEFAULT 'INR',     FOREIGN KEY (customer_id)         REFERENCES customers(customer_id),     FOREIGN KEY (branch_id)         REFERENCES branches(branch_id) );
+Query OK, 0 rows affected (0.0738 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE transactions (     transaction_id BIGINT PRIMARY KEY,     account_id INT NOT NULL,     transaction_type VARCHAR(30) NOT NULL,     transaction_mode VARCHAR(30) NOT NULL,     amount DECIMAL(15,2) NOT NULL,     transaction_date DATETIME NOT NULL,     description VARCHAR(255),     reference_number VARCHAR(50)         UNIQUE,     balance_after DECIMAL(15,2),     transaction_status VARCHAR(20),     location VARCHAR(100),     FOREIGN KEY (account_id)         REFERENCES accounts(account_id) );
+Query OK, 0 rows affected (0.0632 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE cards (     card_id INT PRIMARY KEY,     customer_id INT NOT NULL,     account_id INT,     card_number VARCHAR(20)         UNIQUE NOT NULL,     card_type VARCHAR(20),     card_network VARCHAR(20),     issue_date DATE,     expiry_date DATE,     status VARCHAR(20),     credit_limit DECIMAL(15,2),     FOREIGN KEY (customer_id)         REFERENCES customers(customer_id),     FOREIGN KEY (account_id)         REFERENCES accounts(account_id) );
+Query OK, 0 rows affected (0.0738 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE transfers (     transfer_id BIGINT PRIMARY KEY,      sender_account_id INT NOT NULL,      receiver_account_id INT NOT NULL,      amount DECIMAL(15,2) NOT NULL,      transfer_mode VARCHAR(30),      transfer_date DATETIME,      reference_number VARCHAR(50)         UNIQUE,      transfer_status VARCHAR(20),      remarks VARCHAR(255),      FOREIGN KEY (sender_account_id)         REFERENCES accounts(account_id),      FOREIGN KEY (receiver_account_id)         REFERENCES accounts(account_id) );
+Query OK, 0 rows affected (0.0709 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE beneficiaries (     beneficiary_id INT PRIMARY KEY,      customer_id INT NOT NULL,      beneficiary_name VARCHAR(100) NOT NULL,      account_number VARCHAR(30) NOT NULL,      bank_name VARCHAR(100),      ifsc_code VARCHAR(20),      nickname VARCHAR(50),      added_date DATE,      status VARCHAR(20),      FOREIGN KEY (customer_id)         REFERENCES customers(customer_id) );
+Query OK, 0 rows affected (0.0569 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > CREATE TABLE card_transactions (     card_transaction_id BIGINT PRIMARY KEY,      card_id INT NOT NULL,      amount DECIMAL(15,2) NOT NULL,      merchant_name VARCHAR(100),      merchant_category VARCHAR(50),      transaction_date DATETIME,      city VARCHAR(50),   transaction_status VARCHAR(20),      reference_number VARCHAR(50),      payment_channel VARCHAR(30),      FOREIGN KEY (card_id)         REFERENCES cards(card_id) );
+Query OK, 0 rows affected (0.0613 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > show tables
+                                             -> ;
++----------------------+
+| Tables_in_banking_db |
++----------------------+
+| accounts             |
+| beneficiaries        |
+| branches             |
+| card_transactions    |
+| cards                |
+| customers            |
+| employees            |
+| transactions         |
+| transfers            |
++----------------------+
+9 rows in set (0.0023 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO branches
+                                             -> (branch_id, branch_code, branch_name, city, state, pincode, address, ifsc_code, phone, manager_name, opening_date, status)
+                                             -> VALUES
+                                             -> (1, 'BR001', 'RRGI Main Branch', 'Ghaziabad', 'Uttar Pradesh', '201003', 'Raj Nagar, Ghaziabad', 'RRGI0000001', '9876500001', 'Amit Sharma', '2010-04-15', 'ACTIVE'),
+                                             ->
+                                             -> (2, 'BR002', 'Delhi Central Branch', 'New Delhi', 'Delhi', '110001', 'Connaught Place, New Delhi', 'RRGI0000002', '9876500002', 'Priya Verma', '2012-07-20', 'ACTIVE'),
+                                             ->
+                                             -> (3, 'BR003', 'Noida Branch', 'Noida', 'Uttar Pradesh', '201301', 'Sector 18, Noida', 'RRGI0000003', '9876500003', 'Rahul Singh', '2015-01-10', 'ACTIVE'),
+                                             ->
+                                             -> (4, 'BR004', 'Meerut Branch', 'Meerut', 'Uttar Pradesh', '250001', 'Begum Bridge Road, Meerut', 'RRGI0000004', '9876500004', 'Neha Gupta', '2016-09-05', 'ACTIVE'),
+                                             ->
+                                             -> (5, 'BR005', 'Lucknow Branch', 'Lucknow', 'Uttar Pradesh', '226001', 'Hazratganj, Lucknow', 'RRGI0000005', '9876500005', 'Vikas Yadav', '2018-03-12', 'ACTIVE');
+Query OK, 5 rows affected (0.0477 sec)
+
+Records: 5  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > select * from branches
+                                             -> ;
++-----------+-------------+----------------------+-----------+---------------+---------+----------------------------+-------------+------------+--------------+--------------+--------+
+| branch_id | branch_code | branch_name          | city      | state         | pincode | address                    | ifsc_code   | phone      | manager_name | opening_date | status |
++-----------+-------------+----------------------+-----------+---------------+---------+----------------------------+-------------+------------+--------------+--------------+--------+
+|         1 | BR001       | RRGI Main Branch     | Ghaziabad | Uttar Pradesh | 201003  | Raj Nagar, Ghaziabad       | RRGI0000001 | 9876500001 | Amit Sharma  | 2010-04-15   | ACTIVE |
+|         2 | BR002       | Delhi Central Branch | New Delhi | Delhi         | 110001  | Connaught Place, New Delhi | RRGI0000002 | 9876500002 | Priya Verma  | 2012-07-20   | ACTIVE |
+|         3 | BR003       | Noida Branch         | Noida     | Uttar Pradesh | 201301  | Sector 18, Noida           | RRGI0000003 | 9876500003 | Rahul Singh  | 2015-01-10   | ACTIVE |
+|         4 | BR004       | Meerut Branch        | Meerut    | Uttar Pradesh | 250001  | Begum Bridge Road, Meerut  | RRGI0000004 | 9876500004 | Neha Gupta   | 2016-09-05   | ACTIVE |
+|         5 | BR005       | Lucknow Branch       | Lucknow   | Uttar Pradesh | 226001  | Hazratganj, Lucknow        | RRGI0000005 | 9876500005 | Vikas Yadav  | 2018-03-12   | ACTIVE |
++-----------+-------------+----------------------+-----------+---------------+---------+----------------------------+-------------+------------+--------------+--------------+--------+
+5 rows in set (0.0067 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO customers
+                                             -> (customer_id, customer_number, first_name, last_name, email, phone, date_of_birth, gender, address, city, state, pincode, customer_since, customer_status)
+                                             -> VALUES
+                                             -> (1, 'CUST1001', 'Arun', 'Kumar', 'arun@gmail.com', '9000000001', '2003-05-12', 'Male', 'Raj Nagar', 'Ghaziabad', 'Uttar Pradesh', '201003', '2021-06-10', 'ACTIVE'),
+                                             ->
+                                             -> (2, 'CUST1002', 'Rahul', 'Sharma', 'rahul@gmail.com', '9000000002', '2001-08-21', 'Male', 'Sector 62', 'Noida', 'Uttar Pradesh', '201309', '2020-03-15', 'ACTIVE'),
+                                             ->
+                                             -> (3, 'CUST1003', 'Priya', 'Singh', 'priya@gmail.com', '9000000003', '2002-01-17', 'Female', 'Lajpat Nagar', 'New Delhi', 'Delhi', '110024', '2022-01-20', 'ACTIVE'),
+                                             ->
+                                             -> (4, 'CUST1004', 'Ankit', 'Verma', 'ankit@gmail.com', '9000000004', '1999-11-05', 'Male', 'Indirapuram', 'Ghaziabad', 'Uttar Pradesh', '201014', '2019-08-11', 'ACTIVE'),
+                                             ->
+                                             -> (5, 'CUST1005', 'Neha', 'Gupta', 'neha@gmail.com', '9000000005', '2000-04-25', 'Female', 'Vaishali', 'Ghaziabad', 'Uttar Pradesh', '201010', '2021-11-09', 'ACTIVE'),
+                                             ->
+                                             -> (6, 'CUST1006', 'Rohit', 'Yadav', 'rohit@gmail.com', '9000000006', '1998-09-14', 'Male', 'Sector 18', 'Noida', 'Uttar Pradesh', '201301', '2018-05-22', 'ACTIVE'),
+                                             ->
+                                             -> (7, 'CUST1007', 'Sneha', 'Patel', 'sneha@gmail.com', '9000000007', '2003-12-30', 'Female', 'Hazratganj', 'Lucknow', 'Uttar Pradesh', '226001', '2023-02-14', 'ACTIVE'),
+                                             ->
+                                             -> (8, 'CUST1008', 'Vikas', 'Mehta', 'vikas@gmail.com', '9000000008', '1997-06-18', 'Male', 'Rajouri Garden', 'New Delhi', 'Delhi', '110027', '2017-10-18', 'ACTIVE'),
+                                             ->
+                                             -> (9, 'CUST1009', 'Kavita', 'Joshi', 'kavita@gmail.com', '9000000009', '2001-03-09', 'Female', 'Shastri Nagar', 'Meerut', 'Uttar Pradesh', '250004', '2020-12-01', 'ACTIVE'),
+                                             ->
+                                             -> (10, 'CUST1010', 'Mohit', 'Agarwal', 'mohit@gmail.com', '9000000010', '1996-10-27', 'Male', 'Civil Lines', 'Meerut', 'Uttar Pradesh', '250001', '2016-07-07', 'ACTIVE');
+Query OK, 10 rows affected (0.0177 sec)
+
+Records: 10  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > select * from customers
+                                             -> ;
++-------------+-----------------+------------+-----------+------------------+------------+---------------+--------+----------------+-----------+---------------+---------+----------------+-----------------+
+| customer_id | customer_number | first_name | last_name | email            | phone      | date_of_birth | gender | address        | city      | state         | pincode | customer_since | customer_status |
++-------------+-----------------+------------+-----------+------------------+------------+---------------+--------+----------------+-----------+---------------+---------+----------------+-----------------+
+|           1 | CUST1001        | Arun       | Kumar     | arun@gmail.com   | 9000000001 | 2003-05-12    | Male   | Raj Nagar      | Ghaziabad | Uttar Pradesh | 201003  | 2021-06-10     | ACTIVE          |
+|           2 | CUST1002        | Rahul      | Sharma    | rahul@gmail.com  | 9000000002 | 2001-08-21    | Male   | Sector 62      | Noida     | Uttar Pradesh | 201309  | 2020-03-15     | ACTIVE          |
+|           3 | CUST1003        | Priya      | Singh     | priya@gmail.com  | 9000000003 | 2002-01-17    | Female | Lajpat Nagar   | New Delhi | Delhi         | 110024  | 2022-01-20     | ACTIVE          |
+|           4 | CUST1004        | Ankit      | Verma     | ankit@gmail.com  | 9000000004 | 1999-11-05    | Male   | Indirapuram    | Ghaziabad | Uttar Pradesh | 201014  | 2019-08-11     | ACTIVE          |
+|           5 | CUST1005        | Neha       | Gupta     | neha@gmail.com   | 9000000005 | 2000-04-25    | Female | Vaishali       | Ghaziabad | Uttar Pradesh | 201010  | 2021-11-09     | ACTIVE          |
+|           6 | CUST1006        | Rohit      | Yadav     | rohit@gmail.com  | 9000000006 | 1998-09-14    | Male   | Sector 18      | Noida     | Uttar Pradesh | 201301  | 2018-05-22     | ACTIVE          |
+|           7 | CUST1007        | Sneha      | Patel     | sneha@gmail.com  | 9000000007 | 2003-12-30    | Female | Hazratganj     | Lucknow   | Uttar Pradesh | 226001  | 2023-02-14     | ACTIVE          |
+|           8 | CUST1008        | Vikas      | Mehta     | vikas@gmail.com  | 9000000008 | 1997-06-18    | Male   | Rajouri Garden | New Delhi | Delhi         | 110027  | 2017-10-18     | ACTIVE          |
+|           9 | CUST1009        | Kavita     | Joshi     | kavita@gmail.com | 9000000009 | 2001-03-09    | Female | Shastri Nagar  | Meerut    | Uttar Pradesh | 250004  | 2020-12-01     | ACTIVE          |
+|          10 | CUST1010        | Mohit      | Agarwal   | mohit@gmail.com  | 9000000010 | 1996-10-27    | Male   | Civil Lines    | Meerut    | Uttar Pradesh | 250001  | 2016-07-07     | ACTIVE          |
++-------------+-----------------+------------+-----------+------------------+------------+---------------+--------+----------------+-----------+---------------+---------+----------------+-----------------+
+10 rows in set (0.0024 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO employees
+                                             -> (employee_id, employee_code, branch_id, employee_name, job_role, email, phone, salary, joining_date, status)
+
+                                             -> VALUES
+                                             -> (1, 'EMP001', 1, 'Amit Sharma', 'Branch Manager', 'amit@rrgibank.com', '9100000001', 85000.00, '2010-04-15', 'ACTIVE'),
+                                             ->
+                                             -> (2, 'EMP002', 1, 'Pooja Singh', 'Cashier', 'pooja@rrgibank.com', '9100000002', 42000.00, '2018-06-10', 'ACTIVE'),
+                                             ->
+                                             -> (3, 'EMP003', 2, 'Priya Verma', 'Branch Manager', 'priya@rrgibank.com', '9100000003', 90000.00, '2012-07-20', 'ACTIVE'),
+                                             ->
+                                             -> (4, 'EMP004', 2, 'Ravi Kumar', 'Accountant', 'ravi@rrgibank.com', '9100000004', 55000.00, '2019-01-15', 'ACTIVE'),
+                                             ->
+                                             -> (5, 'EMP005', 3, 'Rahul Singh', 'Branch Manager', 'rahul@rrgibank.com', '9100000005', 88000.00, '2015-01-10', 'ACTIVE'),
+                                             ->
+                                             -> (6, 'EMP006', 3, 'Nisha Gupta', 'Cashier', 'nisha@rrgibank.com', '9100000006', 40000.00, '2020-04-12', 'ACTIVE'),
+                                             ->
+                                             -> (7, 'EMP007', 4, 'Neha Gupta', 'Branch Manager', 'neha@rrgibank.com', '9100000007', 82000.00, '2016-09-05', 'ACTIVE'),
+                                             ->
+                                             -> (8, 'EMP008', 4, 'Sandeep Yadav', 'Loan Officer', 'sandeep@rrgibank.com', '9100000008', 60000.00, '2021-02-18', 'ACTIVE'),
+                                             ->
+                                             -> (9, 'EMP009', 5, 'Vikas Yadav', 'Branch Manager', 'vikas@rrgibank.com', '9100000009', 87000.00, '2018-03-12', 'ACTIVE'),
+                                             ->
+                                             -> (10, 'EMP010', 5, 'Anjali Mehta', 'Accountant', 'anjali@rrgibank.com', '9100000010', 53000.00, '2022-07-20', 'ACTIVE');
+Query OK, 10 rows affected (0.0150 sec)
+
+Records: 10  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > select * from employees
+                                             -> ;
++-------------+---------------+-----------+---------------+----------------+----------------------+------------+----------+--------------+--------+
+| employee_id | employee_code | branch_id | employee_name | job_role       | email                | phone      | salary   | joining_date | status |
++-------------+---------------+-----------+---------------+----------------+----------------------+------------+----------+--------------+--------+
+|           1 | EMP001        |         1 | Amit Sharma   | Branch Manager | amit@rrgibank.com    | 9100000001 | 85000.00 | 2010-04-15   | ACTIVE |
+|           2 | EMP002        |         1 | Pooja Singh   | Cashier        | pooja@rrgibank.com   | 9100000002 | 42000.00 | 2018-06-10   | ACTIVE |
+|           3 | EMP003        |         2 | Priya Verma   | Branch Manager | priya@rrgibank.com   | 9100000003 | 90000.00 | 2012-07-20   | ACTIVE |
+|           4 | EMP004        |         2 | Ravi Kumar    | Accountant     | ravi@rrgibank.com    | 9100000004 | 55000.00 | 2019-01-15   | ACTIVE |
+|           5 | EMP005        |         3 | Rahul Singh   | Branch Manager | rahul@rrgibank.com   | 9100000005 | 88000.00 | 2015-01-10   | ACTIVE |
+|           6 | EMP006        |         3 | Nisha Gupta   | Cashier        | nisha@rrgibank.com   | 9100000006 | 40000.00 | 2020-04-12   | ACTIVE |
+|           7 | EMP007        |         4 | Neha Gupta    | Branch Manager | neha@rrgibank.com    | 9100000007 | 82000.00 | 2016-09-05   | ACTIVE |
+|           8 | EMP008        |         4 | Sandeep Yadav | Loan Officer   | sandeep@rrgibank.com | 9100000008 | 60000.00 | 2021-02-18   | ACTIVE |
+|           9 | EMP009        |         5 | Vikas Yadav   | Branch Manager | vikas@rrgibank.com   | 9100000009 | 87000.00 | 2018-03-12   | ACTIVE |
+|          10 | EMP010        |         5 | Anjali Mehta  | Accountant     | anjali@rrgibank.com  | 9100000010 | 53000.00 | 2022-07-20   | ACTIVE |
++-------------+---------------+-----------+---------------+----------------+----------------------+------------+----------+--------------+--------+
+10 rows in set (0.0035 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO accounts
+                                             -> (account_id, customer_id, branch_id, account_number, account_type, balance, minimum_balance, opened_date, status, currency)
+                                             -> VALUES
+                                             -> (1, 1, 1, '100000000001', 'SAVINGS', 85000.00, 5000.00, '2021-06-10', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (2, 1, 1, '100000000002', 'CURRENT', 250000.00, 10000.00, '2022-02-15', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (3, 2, 3, '100000000003', 'SAVINGS', 125000.00, 5000.00, '2020-03-15', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (4, 3, 2, '100000000004', 'SAVINGS', 95000.00, 5000.00, '2022-01-20', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (5, 4, 1, '100000000005', 'CURRENT', 310000.00, 10000.00, '2019-08-11', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (6, 5, 1, '100000000006', 'SAVINGS', 67000.00, 5000.00, '2021-11-09', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (7, 6, 3, '100000000007', 'SALARY', 145000.00, 0.00, '2018-05-22', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (8, 7, 5, '100000000008', 'SAVINGS', 43000.00, 5000.00, '2023-02-14', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (9, 8, 2, '100000000009', 'CURRENT', 275000.00, 10000.00, '2017-10-18', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (10, 9, 4, 'SAVINGS', 89000.00, 5000.00, '2020-12-01', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (11, 10, 4, 'SAVINGS', 156000.00, 5000.00, '2016-07-07', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (12, 2, 3, '100000000012', 'FD', 500000.00, 0.00, '2024-01-10', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (13, 3, 2, '100000000013', 'CURRENT', 185000.00, 10000.00, '2023-06-15', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (14, 6, 3, '100000000014', 'SAVINGS', 72000.00, 5000.00, '2021-09-20', 'ACTIVE', 'INR'),
+                                             ->
+                                             -> (15, 8, 2, '100000000015', 'SAVINGS', 198000.00, 5000.00, '2019-04-25', 'ACTIVE', 'INR');
+ERROR: 1136: Column count doesn't match value count at row 10
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO transactions
+                                             -> (transaction_id, account_id, transaction_type, transaction_mode, amount, transaction_date, description, reference_number, balance_after, transaction_status, location)
+                                             -> VALUES
+                                             -> (1001, 1, 'DEPOSIT', 'BRANCH', 50000.00, '2026-01-05 10:15:00', 'Cash Deposit', 'TXN100001', 85000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1002, 1, 'WITHDRAWAL', 'ATM', 10000.00, '2026-01-10 14:20:00', 'ATM Withdrawal', 'TXN100002', 75000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1003, 1, 'DEPOSIT', 'UPI', 20000.00, '2026-01-15 09:30:00', 'UPI Deposit', 'TXN100003', 95000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1004, 2, 'DEPOSIT', 'NEFT', 100000.00, '2026-01-06 11:00:00', 'NEFT Credit', 'TXN100004', 250000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1005, 2, 'WITHDRAWAL', 'BRANCH', 25000.00, '2026-01-12 12:10:00', 'Cash Withdrawal', 'TXN100005', 225000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1006, 3, 'DEPOSIT', 'UPI', 30000.00, '2026-01-03 08:45:00', 'UPI Deposit', 'TXN100006', 125000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1007, 3, 'WITHDRAWAL', 'ATM', 15000.00, '2026-01-08 18:20:00', 'ATM Withdrawal', 'TXN100007', 110000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1008, 4, 'DEPOSIT', 'NEFT', 45000.00, '2026-01-09 10:30:00', 'NEFT Credit', 'TXN100008', 95000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1009, 4, 'PAYMENT', 'UPI', 5000.00, '2026-01-14 16:40:00', 'Online Payment', 'TXN100009', 90000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1010, 5, 'DEPOSIT', 'BRANCH', 75000.00, '2026-01-02 11:15:00', 'Cash Deposit', 'TXN100010', 310000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1011, 5, 'WITHDRAWAL', 'ATM', 20000.00, '2026-01-11 13:25:00', 'ATM Withdrawal', 'TXN100011', 290000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1012, 6, 'DEPOSIT', 'UPI', 25000.00, '2026-01-04 09:15:00', 'UPI Credit', 'TXN100012', 67000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1013, 6, 'PAYMENT', 'UPI', 3500.00, '2026-01-18 19:10:00', 'Bill Payment', 'TXN100013', 63500.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1014, 7, 'DEPOSIT', 'NEFT', 60000.00, '2026-01-05 10:00:00', 'Salary Credit', 'TXN100014', 145000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1015, 7, 'WITHDRAWAL', 'ATM', 10000.00, '2026-01-09 17:30:00', 'ATM Withdrawal', 'TXN100015', 135000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1016, 8, 'DEPOSIT', 'UPI', 15000.00, '2026-01-07 08:30:00', 'UPI Deposit', 'TXN100016', 43000.00, 'SUCCESS', 'Lucknow'),
+                                             ->
+                                             -> (1017, 8, 'PAYMENT', 'MOBILE_APP', 2500.00, '2026-01-16 20:15:00', 'Mobile Payment', 'TXN100017', 40500.00, 'SUCCESS', 'Lucknow'),
+                                             ->
+                                             -> (1018, 9, 'DEPOSIT', 'NEFT', 85000.00, '2026-01-03 12:00:00', 'Business Credit', 'TXN100018', 275000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1019, 9, 'WITHDRAWAL', 'ATM', 30000.00, '2026-01-13 15:45:00', 'ATM Withdrawal', 'TXN100019', 245000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1020, 10, 'DEPOSIT', 'BRANCH', 40000.00, '2026-01-04 11:30:00', 'Cash Deposit', 'TXN100020', 89000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1021, 10, 'PAYMENT', 'UPI', 7000.00, '2026-01-17 14:20:00', 'Shopping Payment', 'TXN100021', 82000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1022, 11, 'DEPOSIT', 'NEFT', 70000.00, '2026-01-06 10:10:00', 'NEFT Credit', 'TXN100022', 156000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1023, 11, 'WITHDRAWAL', 'ATM', 12000.00, '2026-01-15 16:30:00', 'ATM Withdrawal', 'TXN100023', 144000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1024, 12, 'DEPOSIT', 'BRANCH', 500000.00, '2026-01-10 13:00:00', 'Fixed Deposit', 'TXN100024', 500000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1025, 13, 'DEPOSIT', 'UPI', 50000.00, '2026-01-08 09:40:00', 'UPI Credit', 'TXN100025', 185000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1026, 13, 'PAYMENT', 'NET_BANKING', 15000.00, '2026-01-19 11:50:00', 'Online Payment', 'TXN100026', 170000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1027, 14, 'DEPOSIT', 'NEFT', 30000.00, '2026-01-11 10:20:00', 'Salary Credit', 'TXN100027', 72000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1028, 14, 'WITHDRAWAL', 'ATM', 8000.00, '2026-01-20 18:00:00', 'ATM Withdrawal', 'TXN100028', 64000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1029, 15, 'DEPOSIT', 'UPI', 90000.00, '2026-01-12 09:00:00', 'UPI Credit', 'TXN100029', 198000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1030, 15, 'PAYMENT', 'NET_BANKING', 22000.00, '2026-01-21 12:45:00', 'Online Shopping', 'TXN100030', 176000.00, 'SUCCESS', 'Delhi');
+ERROR: 1452: Cannot add or update a child row: a foreign key constraint fails (`banking_db`.`transactions`, CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`))
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO cards
+                                             -> (card_id, customer_id, account_id, card_number, card_type, card_network, issue_date, expiry_date, status, credit_limit)
+                                             -> VALUES
+                                             -> (1, 1, 1, '4567000000000001', 'DEBIT', 'VISA', '2021-06-15', '2026-06-30', 'ACTIVE', NULL),
+                                             ->
+                                             -> (2, 2, 3, '4567000000000002', 'DEBIT', 'RUPAY', '2020-04-01', '2025-04-30', 'EXPIRED', NULL),
+                                             ->
+                                             -> (3, 3, 4, '4567000000000003', 'DEBIT', 'MASTERCARD', '2022-02-01', '2027-02-28', 'ACTIVE', NULL),
+                                             ->
+                                             -> (4, 4, 5, '4567000000000004', 'CREDIT', 'VISA', '2020-01-10', '2026-01-31', 'ACTIVE', 200000.00),
+                                             ->
+                                             -> (5, 5, 6, '4567000000000005', 'DEBIT', 'RUPAY', '2021-11-15', '2026-11-30', 'ACTIVE', NULL),
+                                             ->
+                                             -> (6, 6, 7, '4567000000000006', 'DEBIT', 'VISA', '2018-06-01', '2028-06-30', 'ACTIVE', NULL),
+                                             ->
+                                             -> (7, 7, 8, '4567000000000007', 'DEBIT', 'RUPAY', '2023-03-01', '2028-03-31', 'ACTIVE', NULL),
+                                             ->
+                                             -> (8, 8, 9, '4567000000000008', 'CREDIT', 'MASTERCARD', '2019-01-15', '2027-01-31', 'ACTIVE', 300000.00),
+                                             ->
+                                             -> (9, 9, 10, '4567000000000009', 'DEBIT', 'VISA', '2021-01-10', '2026-01-31', 'BLOCKED', NULL),
+                                             ->
+                                             -> (10, 10, 11, '4567000000000010', 'DEBIT', 'RUPAY', '2017-08-01', '2027-08-31', 'ACTIVE', NULL);
+ERROR: 1452: Cannot add or update a child row: a foreign key constraint fails (`banking_db`.`cards`, CONSTRAINT `cards_ibfk_2` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`))
+ MySQL  localhost:33060+ ssl  banking_db  SQL > select * from transactions
+                                             -> ;
+Empty set (0.0019 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > ^C
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM accounts;
+Empty set (0.0034 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO accounts
+                                             -> (account_id, customer_id, branch_id, account_number, account_type, balance, minimum_balance, opened_date, status, currency)
+                                             -> VALUES
+                                             -> (1, 1, 1, '100000000001', 'SAVINGS', 85000.00, 5000.00, '2021-06-10', 'ACTIVE', 'INR'),
+                                             -> (2, 1, 1, '100000000002', 'CURRENT', 250000.00, 10000.00, '2022-02-15', 'ACTIVE', 'INR'),
+                                             -> (3, 2, 3, '100000000003', 'SAVINGS', 125000.00, 5000.00, '2020-03-15', 'ACTIVE', 'INR'),
+                                             -> (4, 3, 2, '100000000004', 'SAVINGS', 95000.00, 5000.00, '2022-01-20', 'ACTIVE', 'INR'),
+                                             -> (5, 4, 1, '100000000005', 'CURRENT', 310000.00, 10000.00, '2019-08-11', 'ACTIVE', 'INR'),
+                                             -> (6, 5, 1, '100000000006', 'SAVINGS', 67000.00, 5000.00, '2021-11-09', 'ACTIVE', 'INR'),
+                                             -> (7, 6, 3, '100000000007', 'SALARY', 145000.00, 0.00, '2018-05-22', 'ACTIVE', 'INR'),
+                                             -> (8, 7, 5, '100000000008', 'SAVINGS', 43000.00, 5000.00, '2023-02-14', 'ACTIVE', 'INR'),
+                                             -> (9, 8, 2, '100000000009', 'CURRENT', 275000.00, 10000.00, '2017-10-18', 'ACTIVE', 'INR'),
+                                             -> (10, 9, 4, '100000000010', 'SAVINGS', 89000.00, 5000.00, '2020-12-01', 'ACTIVE', 'INR'),
+                                             -> (11, 10, 4, '100000000011', 'SAVINGS', 156000.00, 5000.00, '2016-07-07', 'ACTIVE', 'INR'),
+                                             -> (12, 2, 3, '100000000012', 'FD', 500000.00, 0.00, '2024-01-10', 'ACTIVE', 'INR'),
+                                             -> (13, 3, 2, '100000000013', 'CURRENT', 185000.00, 10000.00, '2023-06-15', 'ACTIVE', 'INR'),
+                                             -> (14, 6, 3, '100000000014', 'SAVINGS', 72000.00, 5000.00, '2021-09-20', 'ACTIVE', 'INR'),
+                                             -> (15, 8, 2, '100000000015', 'SAVINGS', 198000.00, 5000.00, '2019-04-25', 'ACTIVE', 'INR');
+Query OK, 15 rows affected (0.0123 sec)
+
+Records: 15  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM accounts;
++------------+-------------+-----------+----------------+--------------+-----------+-----------------+-------------+--------+----------+
+| account_id | customer_id | branch_id | account_number | account_type | balance   | minimum_balance | opened_date | status | currency |
++------------+-------------+-----------+----------------+--------------+-----------+-----------------+-------------+--------+----------+
+|          1 |           1 |         1 | 100000000001   | SAVINGS      |  85000.00 |         5000.00 | 2021-06-10  | ACTIVE | INR      |
+|          2 |           1 |         1 | 100000000002   | CURRENT      | 250000.00 |        10000.00 | 2022-02-15  | ACTIVE | INR      |
+|          3 |           2 |         3 | 100000000003   | SAVINGS      | 125000.00 |         5000.00 | 2020-03-15  | ACTIVE | INR      |
+|          4 |           3 |         2 | 100000000004   | SAVINGS      |  95000.00 |         5000.00 | 2022-01-20  | ACTIVE | INR      |
+|          5 |           4 |         1 | 100000000005   | CURRENT      | 310000.00 |        10000.00 | 2019-08-11  | ACTIVE | INR      |
+|          6 |           5 |         1 | 100000000006   | SAVINGS      |  67000.00 |         5000.00 | 2021-11-09  | ACTIVE | INR      |
+|          7 |           6 |         3 | 100000000007   | SALARY       | 145000.00 |            0.00 | 2018-05-22  | ACTIVE | INR      |
+|          8 |           7 |         5 | 100000000008   | SAVINGS      |  43000.00 |         5000.00 | 2023-02-14  | ACTIVE | INR      |
+|          9 |           8 |         2 | 100000000009   | CURRENT      | 275000.00 |        10000.00 | 2017-10-18  | ACTIVE | INR      |
+|         10 |           9 |         4 | 100000000010   | SAVINGS      |  89000.00 |         5000.00 | 2020-12-01  | ACTIVE | INR      |
+|         11 |          10 |         4 | 100000000011   | SAVINGS      | 156000.00 |         5000.00 | 2016-07-07  | ACTIVE | INR      |
+|         12 |           2 |         3 | 100000000012   | FD           | 500000.00 |            0.00 | 2024-01-10  | ACTIVE | INR      |
+|         13 |           3 |         2 | 100000000013   | CURRENT      | 185000.00 |        10000.00 | 2023-06-15  | ACTIVE | INR      |
+|         14 |           6 |         3 | 100000000014   | SAVINGS      |  72000.00 |         5000.00 | 2021-09-20  | ACTIVE | INR      |
+|         15 |           8 |         2 | 100000000015   | SAVINGS      | 198000.00 |         5000.00 | 2019-04-25  | ACTIVE | INR      |
++------------+-------------+-----------+----------------+--------------+-----------+-----------------+-------------+--------+----------+
+15 rows in set (0.0032 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO transactions
+                                             -> (transaction_id, account_id, transaction_type, transaction_mode, amount, transaction_date, description, reference_number, balance_after, transaction_status, location)
+                                             -> VALUES
+                                             -> (1001, 1, 'DEPOSIT', 'BRANCH', 50000.00, '2026-01-05 10:15:00', 'Cash Deposit', 'TXN100001', 85000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1002, 1, 'WITHDRAWAL', 'ATM', 10000.00, '2026-01-10 14:20:00', 'ATM Withdrawal', 'TXN100002', 75000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1003, 1, 'DEPOSIT', 'UPI', 20000.00, '2026-01-15 09:30:00', 'UPI Deposit', 'TXN100003', 95000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1004, 2, 'DEPOSIT', 'NEFT', 100000.00, '2026-01-06 11:00:00', 'NEFT Credit', 'TXN100004', 250000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1005, 2, 'WITHDRAWAL', 'BRANCH', 25000.00, '2026-01-12 12:10:00', 'Cash Withdrawal', 'TXN100005', 225000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1006, 3, 'DEPOSIT', 'UPI', 30000.00, '2026-01-03 08:45:00', 'UPI Deposit', 'TXN100006', 125000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1007, 3, 'WITHDRAWAL', 'ATM', 15000.00, '2026-01-08 18:20:00', 'ATM Withdrawal', 'TXN100007', 110000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1008, 4, 'DEPOSIT', 'NEFT', 45000.00, '2026-01-09 10:30:00', 'NEFT Credit', 'TXN100008', 95000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1009, 4, 'PAYMENT', 'UPI', 5000.00, '2026-01-14 16:40:00', 'Online Payment', 'TXN100009', 90000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1010, 5, 'DEPOSIT', 'BRANCH', 75000.00, '2026-01-02 11:15:00', 'Cash Deposit', 'TXN100010', 310000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1011, 5, 'WITHDRAWAL', 'ATM', 20000.00, '2026-01-11 13:25:00', 'ATM Withdrawal', 'TXN100011', 290000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1012, 6, 'DEPOSIT', 'UPI', 25000.00, '2026-01-04 09:15:00', 'UPI Credit', 'TXN100012', 67000.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1013, 6, 'PAYMENT', 'UPI', 3500.00, '2026-01-18 19:10:00', 'Bill Payment', 'TXN100013', 63500.00, 'SUCCESS', 'Ghaziabad'),
+                                             ->
+                                             -> (1014, 7, 'DEPOSIT', 'NEFT', 60000.00, '2026-01-05 10:00:00', 'Salary Credit', 'TXN100014', 145000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1015, 7, 'WITHDRAWAL', 'ATM', 10000.00, '2026-01-09 17:30:00', 'ATM Withdrawal', 'TXN100015', 135000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1016, 8, 'DEPOSIT', 'UPI', 15000.00, '2026-01-07 08:30:00', 'UPI Deposit', 'TXN100016', 43000.00, 'SUCCESS', 'Lucknow'),
+                                             ->
+                                             -> (1017, 8, 'PAYMENT', 'MOBILE_APP', 2500.00, '2026-01-16 20:15:00', 'Mobile Payment', 'TXN100017', 40500.00, 'SUCCESS', 'Lucknow'),
+                                             ->
+                                             -> (1018, 9, 'DEPOSIT', 'NEFT', 85000.00, '2026-01-03 12:00:00', 'Business Credit', 'TXN100018', 275000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1019, 9, 'WITHDRAWAL', 'ATM', 30000.00, '2026-01-13 15:45:00', 'ATM Withdrawal', 'TXN100019', 245000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1020, 10, 'DEPOSIT', 'BRANCH', 40000.00, '2026-01-04 11:30:00', 'Cash Deposit', 'TXN100020', 89000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1021, 10, 'PAYMENT', 'UPI', 7000.00, '2026-01-17 14:20:00', 'Shopping Payment', 'TXN100021', 82000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1022, 11, 'DEPOSIT', 'NEFT', 70000.00, '2026-01-06 10:10:00', 'NEFT Credit', 'TXN100022', 156000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1023, 11, 'WITHDRAWAL', 'ATM', 12000.00, '2026-01-15 16:30:00', 'ATM Withdrawal', 'TXN100023', 144000.00, 'SUCCESS', 'Meerut'),
+                                             ->
+                                             -> (1024, 12, 'DEPOSIT', 'BRANCH', 500000.00, '2026-01-10 13:00:00', 'Fixed Deposit', 'TXN100024', 500000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1025, 13, 'DEPOSIT', 'UPI', 50000.00, '2026-01-08 09:40:00', 'UPI Credit', 'TXN100025', 185000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1026, 13, 'PAYMENT', 'NET_BANKING', 15000.00, '2026-01-19 11:50:00', 'Online Payment', 'TXN100026', 170000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1027, 14, 'DEPOSIT', 'NEFT', 30000.00, '2026-01-11 10:20:00', 'Salary Credit', 'TXN100027', 72000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1028, 14, 'WITHDRAWAL', 'ATM', 8000.00, '2026-01-20 18:00:00', 'ATM Withdrawal', 'TXN100028', 64000.00, 'SUCCESS', 'Noida'),
+                                             ->
+                                             -> (1029, 15, 'DEPOSIT', 'UPI', 90000.00, '2026-01-12 09:00:00', 'UPI Credit', 'TXN100029', 198000.00, 'SUCCESS', 'Delhi'),
+                                             ->
+                                             -> (1030, 15, 'PAYMENT', 'NET_BANKING', 22000.00, '2026-01-21 12:45:00', 'Online Shopping', 'TXN100030', 176000.00, 'SUCCESS', 'Delhi');
+Query OK, 30 rows affected (0.0133 sec)
+
+Records: 30  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT COUNT(*) FROM transactions;
++----------+
+| COUNT(*) |
++----------+
+|       30 |
++----------+
+1 row in set (0.0042 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM transactions;
++----------------+------------+------------------+------------------+-----------+---------------------+------------------+------------------+---------------+--------------------+-----------+
+| transaction_id | account_id | transaction_type | transaction_mode | amount    | transaction_date    | description      | reference_number | balance_after | transaction_status | location  |
++----------------+------------+------------------+------------------+-----------+---------------------+------------------+------------------+---------------+--------------------+-----------+
+|           1001 |          1 | DEPOSIT          | BRANCH           |  50000.00 | 2026-01-05 10:15:00 | Cash Deposit     | TXN100001        |      85000.00 | SUCCESS            | Ghaziabad |
+|           1002 |          1 | WITHDRAWAL       | ATM              |  10000.00 | 2026-01-10 14:20:00 | ATM Withdrawal   | TXN100002        |      75000.00 | SUCCESS            | Ghaziabad |
+|           1003 |          1 | DEPOSIT          | UPI              |  20000.00 | 2026-01-15 09:30:00 | UPI Deposit      | TXN100003        |      95000.00 | SUCCESS            | Ghaziabad |
+|           1004 |          2 | DEPOSIT          | NEFT             | 100000.00 | 2026-01-06 11:00:00 | NEFT Credit      | TXN100004        |     250000.00 | SUCCESS            | Ghaziabad |
+|           1005 |          2 | WITHDRAWAL       | BRANCH           |  25000.00 | 2026-01-12 12:10:00 | Cash Withdrawal  | TXN100005        |     225000.00 | SUCCESS            | Ghaziabad |
+|           1006 |          3 | DEPOSIT          | UPI              |  30000.00 | 2026-01-03 08:45:00 | UPI Deposit      | TXN100006        |     125000.00 | SUCCESS            | Noida     |
+|           1007 |          3 | WITHDRAWAL       | ATM              |  15000.00 | 2026-01-08 18:20:00 | ATM Withdrawal   | TXN100007        |     110000.00 | SUCCESS            | Noida     |
+|           1008 |          4 | DEPOSIT          | NEFT             |  45000.00 | 2026-01-09 10:30:00 | NEFT Credit      | TXN100008        |      95000.00 | SUCCESS            | Delhi     |
+|           1009 |          4 | PAYMENT          | UPI              |   5000.00 | 2026-01-14 16:40:00 | Online Payment   | TXN100009        |      90000.00 | SUCCESS            | Delhi     |
+|           1010 |          5 | DEPOSIT          | BRANCH           |  75000.00 | 2026-01-02 11:15:00 | Cash Deposit     | TXN100010        |     310000.00 | SUCCESS            | Ghaziabad |
+|           1011 |          5 | WITHDRAWAL       | ATM              |  20000.00 | 2026-01-11 13:25:00 | ATM Withdrawal   | TXN100011        |     290000.00 | SUCCESS            | Ghaziabad |
+|           1012 |          6 | DEPOSIT          | UPI              |  25000.00 | 2026-01-04 09:15:00 | UPI Credit       | TXN100012        |      67000.00 | SUCCESS            | Ghaziabad |
+|           1013 |          6 | PAYMENT          | UPI              |   3500.00 | 2026-01-18 19:10:00 | Bill Payment     | TXN100013        |      63500.00 | SUCCESS            | Ghaziabad |
+|           1014 |          7 | DEPOSIT          | NEFT             |  60000.00 | 2026-01-05 10:00:00 | Salary Credit    | TXN100014        |     145000.00 | SUCCESS            | Noida     |
+|           1015 |          7 | WITHDRAWAL       | ATM              |  10000.00 | 2026-01-09 17:30:00 | ATM Withdrawal   | TXN100015        |     135000.00 | SUCCESS            | Noida     |
+|           1016 |          8 | DEPOSIT          | UPI              |  15000.00 | 2026-01-07 08:30:00 | UPI Deposit      | TXN100016        |      43000.00 | SUCCESS            | Lucknow   |
+|           1017 |          8 | PAYMENT          | MOBILE_APP       |   2500.00 | 2026-01-16 20:15:00 | Mobile Payment   | TXN100017        |      40500.00 | SUCCESS            | Lucknow   |
+|           1018 |          9 | DEPOSIT          | NEFT             |  85000.00 | 2026-01-03 12:00:00 | Business Credit  | TXN100018        |     275000.00 | SUCCESS            | Delhi     |
+|           1019 |          9 | WITHDRAWAL       | ATM              |  30000.00 | 2026-01-13 15:45:00 | ATM Withdrawal   | TXN100019        |     245000.00 | SUCCESS            | Delhi     |
+|           1020 |         10 | DEPOSIT          | BRANCH           |  40000.00 | 2026-01-04 11:30:00 | Cash Deposit     | TXN100020        |      89000.00 | SUCCESS            | Meerut    |
+|           1021 |         10 | PAYMENT          | UPI              |   7000.00 | 2026-01-17 14:20:00 | Shopping Payment | TXN100021        |      82000.00 | SUCCESS            | Meerut    |
+|           1022 |         11 | DEPOSIT          | NEFT             |  70000.00 | 2026-01-06 10:10:00 | NEFT Credit      | TXN100022        |     156000.00 | SUCCESS            | Meerut    |
+|           1023 |         11 | WITHDRAWAL       | ATM              |  12000.00 | 2026-01-15 16:30:00 | ATM Withdrawal   | TXN100023        |     144000.00 | SUCCESS            | Meerut    |
+|           1024 |         12 | DEPOSIT          | BRANCH           | 500000.00 | 2026-01-10 13:00:00 | Fixed Deposit    | TXN100024        |     500000.00 | SUCCESS            | Noida     |
+|           1025 |         13 | DEPOSIT          | UPI              |  50000.00 | 2026-01-08 09:40:00 | UPI Credit       | TXN100025        |     185000.00 | SUCCESS            | Delhi     |
+|           1026 |         13 | PAYMENT          | NET_BANKING      |  15000.00 | 2026-01-19 11:50:00 | Online Payment   | TXN100026        |     170000.00 | SUCCESS            | Delhi     |
+|           1027 |         14 | DEPOSIT          | NEFT             |  30000.00 | 2026-01-11 10:20:00 | Salary Credit    | TXN100027        |      72000.00 | SUCCESS            | Noida     |
+|           1028 |         14 | WITHDRAWAL       | ATM              |   8000.00 | 2026-01-20 18:00:00 | ATM Withdrawal   | TXN100028        |      64000.00 | SUCCESS            | Noida     |
+|           1029 |         15 | DEPOSIT          | UPI              |  90000.00 | 2026-01-12 09:00:00 | UPI Credit       | TXN100029        |     198000.00 | SUCCESS            | Delhi     |
+|           1030 |         15 | PAYMENT          | NET_BANKING      |  22000.00 | 2026-01-21 12:45:00 | Online Shopping  | TXN100030        |     176000.00 | SUCCESS            | Delhi     |
++----------------+------------+------------------+------------------+-----------+---------------------+------------------+------------------+---------------+--------------------+-----------+
+30 rows in set (0.0029 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT COUNT(*) FROM transactions;
++----------+
+| COUNT(*) |
++----------+
+|       30 |
++----------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO cards
+                                             -> (card_id, customer_id, account_id, card_number, card_type, card_network, issue_date, expiry_date, status, credit_limit)
+                                             -> VALUES
+                                             -> (1, 1, 1, '4567000000000001', 'DEBIT', 'VISA', '2021-06-15', '2026-06-30', 'ACTIVE', NULL),
+                                             -> (2, 2, 3, '4567000000000002', 'DEBIT', 'RUPAY', '2020-04-01', '2025-04-30', 'EXPIRED', NULL),
+                                             -> (3, 3, 4, '4567000000000003', 'DEBIT', 'MASTERCARD', '2022-02-01', '2027-02-28', 'ACTIVE', NULL),
+                                             -> (4, 4, 5, '4567000000000004', 'CREDIT', 'VISA', '2020-01-10', '2026-01-31', 'ACTIVE', 200000.00),
+                                             -> (5, 5, 6, '4567000000000005', 'DEBIT', 'RUPAY', '2021-11-15', '2026-11-30', 'ACTIVE', NULL),
+                                             -> (6, 6, 7, '4567000000000006', 'DEBIT', 'VISA', '2018-06-01', '2028-06-30', 'ACTIVE', NULL),
+                                             -> (7, 7, 8, '4567000000000007', 'DEBIT', 'RUPAY', '2023-03-01', '2028-03-31', 'ACTIVE', NULL),
+                                             -> (8, 8, 9, '4567000000000008', 'CREDIT', 'MASTERCARD', '2019-01-15', '2027-01-31', 'ACTIVE', 300000.00),
+                                             -> (9, 9, 10, '4567000000000009', 'DEBIT', 'VISA', '2021-01-10', '2026-01-31', 'BLOCKED', NULL),
+                                             -> (10, 10, 11, '4567000000000010', 'DEBIT', 'RUPAY', '2017-08-01', '2027-08-31', 'ACTIVE', NULL);
+Query OK, 10 rows affected (0.0105 sec)
+
+Records: 10  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT COUNT(*) FROM cards;
++----------+
+| COUNT(*) |
++----------+
+|       10 |
++----------+
+1 row in set (0.0011 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO card_transactions
+                                             -> (card_transaction_id, card_id, amount, merchant_name, merchant_category, transaction_date, city, transaction_status, reference_number, payment_channel)
+                                             -> VALUES
+                                             -> (2001, 1, 1200.00, 'Amazon', 'Shopping', '2026-01-05 19:20:00', 'Ghaziabad', 'SUCCESS', 'CARDTXN001', 'ONLINE'),
+                                             -> (2002, 1, 450.00, 'Dominos', 'Food', '2026-01-07 20:15:00', 'Ghaziabad', 'SUCCESS', 'CARDTXN002', 'POS'),
+                                             -> (2003, 3, 2500.00, 'Flipkart', 'Shopping', '2026-01-08 15:30:00', 'Delhi', 'SUCCESS', 'CARDTXN003', 'ONLINE'),
+                                             -> (2004, 4, 8500.00, 'Reliance Digital', 'Electronics', '2026-01-09 17:45:00', 'Ghaziabad', 'SUCCESS', 'CARDTXN004', 'POS'),
+                                             -> (2005, 4, 3200.00, 'Myntra', 'Shopping', '2026-01-12 18:20:00', 'Delhi', 'SUCCESS', 'CARDTXN005', 'ONLINE'),
+                                             -> (2006, 5, 900.00, 'Big Bazaar', 'Grocery', '2026-01-10 11:30:00', 'Ghaziabad', 'SUCCESS', 'CARDTXN006', 'POS'),
+                                             -> (2007, 6, 1500.00, 'Swiggy', 'Food', '2026-01-11 21:00:00', 'Noida', 'SUCCESS', 'CARDTXN007', 'ONLINE'),
+                                             -> (2008, 6, 700.00, 'Uber', 'Travel', '2026-01-13 09:15:00', 'Noida', 'SUCCESS', 'CARDTXN008', 'ONLINE'),
+                                             -> (2009, 7, 1100.00, 'Zomato', 'Food', '2026-01-14 20:45:00', 'Lucknow', 'SUCCESS', 'CARDTXN009', 'ONLINE'),
+                                             -> (2010, 8, 15000.00, 'Croma', 'Electronics', '2026-01-15 16:30:00', 'Delhi', 'SUCCESS', 'CARDTXN010', 'POS'),
+                                             -> (2011, 8, 4500.00, 'Amazon', 'Shopping', '2026-01-16 14:10:00', 'Delhi', 'SUCCESS', 'CARDTXN011', 'ONLINE'),
+                                             -> (2012, 9, 2200.00, 'Apollo Pharmacy', 'Healthcare', '2026-01-17 12:20:00', 'Meerut', 'FAILED', 'CARDTXN012', 'POS'),
+                                             -> (2013, 10, 1800.00, 'Reliance Trends', 'Shopping', '2026-01-18 17:30:00', 'Meerut', 'SUCCESS', 'CARDTXN013', 'POS'),
+                                             -> (2014, 3, 600.00, 'Cafe Coffee Day', 'Food', '2026-01-19 18:45:00', 'Delhi', 'SUCCESS', 'CARDTXN014', 'CONTACTLESS'),
+                                             -> (2015, 5, 3500.00, 'Shoppers Stop', 'Shopping', '2026-01-20 16:15:00', 'Ghaziabad', 'SUCCESS', 'CARDTXN015', 'POS');
+Query OK, 15 rows affected (0.0418 sec)
+
+Records: 15  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT COUNT(*) FROM card_transactions;
++----------+
+| COUNT(*) |
++----------+
+|       15 |
++----------+
+1 row in set (0.0017 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM card_transactions;
++---------------------+---------+----------+------------------+-------------------+---------------------+-----------+--------------------+------------------+-----------------+
+| card_transaction_id | card_id | amount   | merchant_name    | merchant_category | transaction_date    | city      | transaction_status | reference_number | payment_channel |
++---------------------+---------+----------+------------------+-------------------+---------------------+-----------+--------------------+------------------+-----------------+
+|                2001 |       1 |  1200.00 | Amazon           | Shopping          | 2026-01-05 19:20:00 | Ghaziabad | SUCCESS            | CARDTXN001       | ONLINE          |
+|                2002 |       1 |   450.00 | Dominos          | Food              | 2026-01-07 20:15:00 | Ghaziabad | SUCCESS            | CARDTXN002       | POS             |
+|                2003 |       3 |  2500.00 | Flipkart         | Shopping          | 2026-01-08 15:30:00 | Delhi     | SUCCESS            | CARDTXN003       | ONLINE          |
+|                2004 |       4 |  8500.00 | Reliance Digital | Electronics       | 2026-01-09 17:45:00 | Ghaziabad | SUCCESS            | CARDTXN004       | POS             |
+|                2005 |       4 |  3200.00 | Myntra           | Shopping          | 2026-01-12 18:20:00 | Delhi     | SUCCESS            | CARDTXN005       | ONLINE          |
+|                2006 |       5 |   900.00 | Big Bazaar       | Grocery           | 2026-01-10 11:30:00 | Ghaziabad | SUCCESS            | CARDTXN006       | POS             |
+|                2007 |       6 |  1500.00 | Swiggy           | Food              | 2026-01-11 21:00:00 | Noida     | SUCCESS            | CARDTXN007       | ONLINE          |
+|                2008 |       6 |   700.00 | Uber             | Travel            | 2026-01-13 09:15:00 | Noida     | SUCCESS            | CARDTXN008       | ONLINE          |
+|                2009 |       7 |  1100.00 | Zomato           | Food              | 2026-01-14 20:45:00 | Lucknow   | SUCCESS            | CARDTXN009       | ONLINE          |
+|                2010 |       8 | 15000.00 | Croma            | Electronics       | 2026-01-15 16:30:00 | Delhi     | SUCCESS            | CARDTXN010       | POS             |
+|                2011 |       8 |  4500.00 | Amazon           | Shopping          | 2026-01-16 14:10:00 | Delhi     | SUCCESS            | CARDTXN011       | ONLINE          |
+|                2012 |       9 |  2200.00 | Apollo Pharmacy  | Healthcare        | 2026-01-17 12:20:00 | Meerut    | FAILED             | CARDTXN012       | POS             |
+|                2013 |      10 |  1800.00 | Reliance Trends  | Shopping          | 2026-01-18 17:30:00 | Meerut    | SUCCESS            | CARDTXN013       | POS             |
+|                2014 |       3 |   600.00 | Cafe Coffee Day  | Food              | 2026-01-19 18:45:00 | Delhi     | SUCCESS            | CARDTXN014       | CONTACTLESS     |
+|                2015 |       5 |  3500.00 | Shoppers Stop    | Shopping          | 2026-01-20 16:15:00 | Ghaziabad | SUCCESS            | CARDTXN015       | POS             |
++---------------------+---------+----------+------------------+-------------------+---------------------+-----------+--------------------+------------------+-----------------+
+15 rows in set (0.0040 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO beneficiaries
+                                             -> (beneficiary_id, customer_id, beneficiary_name, account_number, bank_name, ifsc_code, nickname, added_date, status)
+                                             -> VALUES
+                                             -> (1, 1, 'Rahul Sharma', '200000000001', 'RRGI Bank', 'RRGI0000003', 'Rahul', '2025-01-10', 'ACTIVE'),
+                                             ->
+                                             -> (2, 1, 'Priya Singh', '200000000002', 'RRGI Bank', 'RRGI0000002', 'Priya', '2025-02-15', 'ACTIVE'),
+                                             ->
+                                             -> (3, 2, 'Arun Kumar', '200000000003', 'RRGI Bank', 'RRGI0000001', 'Arun', '2024-08-12', 'ACTIVE'),
+                                             ->
+                                             -> (4, 3, 'Neha Gupta', '200000000004', 'RRGI Bank', 'RRGI0000004', 'Neha', '2025-03-20', 'ACTIVE'),
+                                             ->
+                                             -> (5, 4, 'Rohit Yadav', '200000000005', 'RRGI Bank', 'RRGI0000003', 'Rohit', '2024-11-05', 'ACTIVE'),
+                                             ->
+                                             -> (6, 5, 'Sneha Patel', '200000000006', 'RRGI Bank', 'RRGI0000005', 'Sneha', '2025-01-25', 'ACTIVE'),
+                                             ->
+                                             -> (7, 6, 'Vikas Mehta', '200000000007', 'RRGI Bank', 'RRGI0000002', 'Vikas', '2024-06-18', 'ACTIVE'),
+                                             ->
+                                             -> (8, 7, 'Kavita Joshi', '200000000008', 'RRGI Bank', 'RRGI0000004', 'Kavita', '2025-04-10', 'ACTIVE'),
+                                             ->
+                                             -> (9, 8, 'Mohit Agarwal', '200000000009', 'RRGI Bank', 'RRGI0000004', 'Mohit', '2024-09-22', 'BLOCKED'),
+                                             ->
+                                             -> (10, 9, 'Ankit Verma', '200000000010', 'RRGI Bank', 'RRGI0000001', 'Ankit', '2025-02-01', 'ACTIVE');
+Query OK, 10 rows affected (0.0244 sec)
+
+Records: 10  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT COUNT(*) FROM beneficiaries;
++----------+
+| COUNT(*) |
++----------+
+|       10 |
++----------+
+1 row in set (0.0011 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM beneficiaries;
++----------------+-------------+------------------+----------------+-----------+-------------+----------+------------+---------+
+| beneficiary_id | customer_id | beneficiary_name | account_number | bank_name | ifsc_code   | nickname | added_date | status  |
++----------------+-------------+------------------+----------------+-----------+-------------+----------+------------+---------+
+|              1 |           1 | Rahul Sharma     | 200000000001   | RRGI Bank | RRGI0000003 | Rahul    | 2025-01-10 | ACTIVE  |
+|              2 |           1 | Priya Singh      | 200000000002   | RRGI Bank | RRGI0000002 | Priya    | 2025-02-15 | ACTIVE  |
+|              3 |           2 | Arun Kumar       | 200000000003   | RRGI Bank | RRGI0000001 | Arun     | 2024-08-12 | ACTIVE  |
+|              4 |           3 | Neha Gupta       | 200000000004   | RRGI Bank | RRGI0000004 | Neha     | 2025-03-20 | ACTIVE  |
+|              5 |           4 | Rohit Yadav      | 200000000005   | RRGI Bank | RRGI0000003 | Rohit    | 2024-11-05 | ACTIVE  |
+|              6 |           5 | Sneha Patel      | 200000000006   | RRGI Bank | RRGI0000005 | Sneha    | 2025-01-25 | ACTIVE  |
+|              7 |           6 | Vikas Mehta      | 200000000007   | RRGI Bank | RRGI0000002 | Vikas    | 2024-06-18 | ACTIVE  |
+|              8 |           7 | Kavita Joshi     | 200000000008   | RRGI Bank | RRGI0000004 | Kavita   | 2025-04-10 | ACTIVE  |
+|              9 |           8 | Mohit Agarwal    | 200000000009   | RRGI Bank | RRGI0000004 | Mohit    | 2024-09-22 | BLOCKED |
+|             10 |           9 | Ankit Verma      | 200000000010   | RRGI Bank | RRGI0000001 | Ankit    | 2025-02-01 | ACTIVE  |
++----------------+-------------+------------------+----------------+-----------+-------------+----------+------------+---------+
+10 rows in set (0.0038 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > INSERT INTO transfers
+                                             -> (transfer_id, sender_account_id, receiver_account_id, amount, transfer_mode, transfer_date, reference_number, transfer_status, remarks)
+                                             -> VALUES
+                                             -> (3001, 1, 3, 5000.00, 'UPI', '2026-01-05 12:30:00', 'TRF000001', 'SUCCESS', 'Personal transfer'),
+                                             -> (3002, 3, 4, 10000.00, 'IMPS', '2026-01-06 14:20:00', 'TRF000002', 'SUCCESS', 'Money transfer'),
+                                             -> (3003, 5, 1, 15000.00, 'NEFT', '2026-01-07 10:45:00', 'TRF000003', 'SUCCESS', 'Business payment'),
+                                             -> (3004, 7, 8, 8000.00, 'UPI', '2026-01-08 18:10:00', 'TRF000004', 'SUCCESS', 'Personal transfer'),
+                                             -> (3005, 9, 10, 12000.00, 'NEFT', '2026-01-09 11:30:00', 'TRF000005', 'SUCCESS', 'Fund transfer'),
+                                             -> (3006, 11, 13, 20000.00, 'IMPS', '2026-01-10 15:00:00', 'TRF000006', 'SUCCESS', 'Payment transfer'),
+                                             -> (3007, 6, 2, 7000.00, 'UPI', '2026-01-11 09:40:00', 'TRF000007', 'SUCCESS', 'Personal transfer'),
+                                             -> (3008, 4, 6, 9000.00, 'NEFT', '2026-01-12 13:15:00', 'TRF000008', 'SUCCESS', 'Fund transfer'),
+                                             -> (3009, 8, 15, 11000.00, 'UPI', '2026-01-13 17:20:00', 'TRF000009', 'SUCCESS', 'Payment'),
+                                             -> (3010, 10, 11, 6000.00, 'IMPS', '2026-01-14 12:00:00', 'TRF000010', 'SUCCESS', 'Money transfer'),
+                                             -> (3011, 2, 5, 25000.00, 'NEFT', '2026-01-15 10:30:00', 'TRF000011', 'SUCCESS', 'Business transfer'),
+                                             -> (3012, 13, 9, 18000.00, 'RTGS', '2026-01-16 16:45:00', 'TRF000012', 'SUCCESS', 'Large transfer'),
+                                             -> (3013, 14, 3, 5000.00, 'UPI', '2026-01-17 19:00:00', 'TRF000013', 'SUCCESS', 'Personal transfer'),
+                                             -> (3014, 15, 7, 13000.00, 'IMPS', '2026-01-18 14:30:00', 'TRF000014', 'PENDING', 'Transfer pending'),
+                                             -> (3015, 5, 12, 50000.00, 'NEFT', '2026-01-19 11:15:00', 'TRF000015', 'SUCCESS', 'FD related transfer');
+Query OK, 15 rows affected (0.0216 sec)
+
+Records: 15  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT COUNT(*) FROM transfers;
++----------+
+| COUNT(*) |
++----------+
+|       15 |
++----------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM transfers;
++-------------+-------------------+---------------------+----------+---------------+---------------------+------------------+-----------------+---------------------+
+| transfer_id | sender_account_id | receiver_account_id | amount   | transfer_mode | transfer_date       | reference_number | transfer_status | remarks             |
++-------------+-------------------+---------------------+----------+---------------+---------------------+------------------+-----------------+---------------------+
+|        3001 |                 1 |                   3 |  5000.00 | UPI           | 2026-01-05 12:30:00 | TRF000001        | SUCCESS         | Personal transfer   |
+|        3002 |                 3 |                   4 | 10000.00 | IMPS          | 2026-01-06 14:20:00 | TRF000002        | SUCCESS         | Money transfer      |
+|        3003 |                 5 |                   1 | 15000.00 | NEFT          | 2026-01-07 10:45:00 | TRF000003        | SUCCESS         | Business payment    |
+|        3004 |                 7 |                   8 |  8000.00 | UPI           | 2026-01-08 18:10:00 | TRF000004        | SUCCESS         | Personal transfer   |
+|        3005 |                 9 |                  10 | 12000.00 | NEFT          | 2026-01-09 11:30:00 | TRF000005        | SUCCESS         | Fund transfer       |
+|        3006 |                11 |                  13 | 20000.00 | IMPS          | 2026-01-10 15:00:00 | TRF000006        | SUCCESS         | Payment transfer    |
+|        3007 |                 6 |                   2 |  7000.00 | UPI           | 2026-01-11 09:40:00 | TRF000007        | SUCCESS         | Personal transfer   |
+|        3008 |                 4 |                   6 |  9000.00 | NEFT          | 2026-01-12 13:15:00 | TRF000008        | SUCCESS         | Fund transfer       |
+|        3009 |                 8 |                  15 | 11000.00 | UPI           | 2026-01-13 17:20:00 | TRF000009        | SUCCESS         | Payment             |
+|        3010 |                10 |                  11 |  6000.00 | IMPS          | 2026-01-14 12:00:00 | TRF000010        | SUCCESS         | Money transfer      |
+|        3011 |                 2 |                   5 | 25000.00 | NEFT          | 2026-01-15 10:30:00 | TRF000011        | SUCCESS         | Business transfer   |
+|        3012 |                13 |                   9 | 18000.00 | RTGS          | 2026-01-16 16:45:00 | TRF000012        | SUCCESS         | Large transfer      |
+|        3013 |                14 |                   3 |  5000.00 | UPI           | 2026-01-17 19:00:00 | TRF000013        | SUCCESS         | Personal transfer   |
+|        3014 |                15 |                   7 | 13000.00 | IMPS          | 2026-01-18 14:30:00 | TRF000014        | PENDING         | Transfer pending    |
+|        3015 |                 5 |                  12 | 50000.00 | NEFT          | 2026-01-19 11:15:00 | TRF000015        | SUCCESS         | FD related transfer |
++-------------+-------------------+---------------------+----------+---------------+---------------------+------------------+-----------------+---------------------+
+15 rows in set (0.0020 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM branches;
++-----------+-------------+----------------------+-----------+---------------+---------+----------------------------+-------------+------------+--------------+--------------+--------+
+| branch_id | branch_code | branch_name          | city      | state         | pincode | address                    | ifsc_code   | phone      | manager_name | opening_date | status |
++-----------+-------------+----------------------+-----------+---------------+---------+----------------------------+-------------+------------+--------------+--------------+--------+
+|         1 | BR001       | RRGI Main Branch     | Ghaziabad | Uttar Pradesh | 201003  | Raj Nagar, Ghaziabad       | RRGI0000001 | 9876500001 | Amit Sharma  | 2010-04-15   | ACTIVE |
+|         2 | BR002       | Delhi Central Branch | New Delhi | Delhi         | 110001  | Connaught Place, New Delhi | RRGI0000002 | 9876500002 | Priya Verma  | 2012-07-20   | ACTIVE |
+|         3 | BR003       | Noida Branch         | Noida     | Uttar Pradesh | 201301  | Sector 18, Noida           | RRGI0000003 | 9876500003 | Rahul Singh  | 2015-01-10   | ACTIVE |
+|         4 | BR004       | Meerut Branch        | Meerut    | Uttar Pradesh | 250001  | Begum Bridge Road, Meerut  | RRGI0000004 | 9876500004 | Neha Gupta   | 2016-09-05   | ACTIVE |
+|         5 | BR005       | Lucknow Branch       | Lucknow   | Uttar Pradesh | 226001  | Hazratganj, Lucknow        | RRGI0000005 | 9876500005 | Vikas Yadav  | 2018-03-12   | ACTIVE |
++-----------+-------------+----------------------+-----------+---------------+---------+----------------------------+-------------+------------+--------------+--------------+--------+
+5 rows in set (0.0065 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM customers;
++-------------+-----------------+------------+-----------+------------------+------------+---------------+--------+----------------+-----------+---------------+---------+----------------+-----------------+
+| customer_id | customer_number | first_name | last_name | email            | phone      | date_of_birth | gender | address        | city      | state         | pincode | customer_since | customer_status |
++-------------+-----------------+------------+-----------+------------------+------------+---------------+--------+----------------+-----------+---------------+---------+----------------+-----------------+
+|           1 | CUST1001        | Arun       | Kumar     | arun@gmail.com   | 9000000001 | 2003-05-12    | Male   | Raj Nagar      | Ghaziabad | Uttar Pradesh | 201003  | 2021-06-10     | ACTIVE          |
+|           2 | CUST1002        | Rahul      | Sharma    | rahul@gmail.com  | 9000000002 | 2001-08-21    | Male   | Sector 62      | Noida     | Uttar Pradesh | 201309  | 2020-03-15     | ACTIVE          |
+|           3 | CUST1003        | Priya      | Singh     | priya@gmail.com  | 9000000003 | 2002-01-17    | Female | Lajpat Nagar   | New Delhi | Delhi         | 110024  | 2022-01-20     | ACTIVE          |
+|           4 | CUST1004        | Ankit      | Verma     | ankit@gmail.com  | 9000000004 | 1999-11-05    | Male   | Indirapuram    | Ghaziabad | Uttar Pradesh | 201014  | 2019-08-11     | ACTIVE          |
+|           5 | CUST1005        | Neha       | Gupta     | neha@gmail.com   | 9000000005 | 2000-04-25    | Female | Vaishali       | Ghaziabad | Uttar Pradesh | 201010  | 2021-11-09     | ACTIVE          |
+|           6 | CUST1006        | Rohit      | Yadav     | rohit@gmail.com  | 9000000006 | 1998-09-14    | Male   | Sector 18      | Noida     | Uttar Pradesh | 201301  | 2018-05-22     | ACTIVE          |
+|           7 | CUST1007        | Sneha      | Patel     | sneha@gmail.com  | 9000000007 | 2003-12-30    | Female | Hazratganj     | Lucknow   | Uttar Pradesh | 226001  | 2023-02-14     | ACTIVE          |
+|           8 | CUST1008        | Vikas      | Mehta     | vikas@gmail.com  | 9000000008 | 1997-06-18    | Male   | Rajouri Garden | New Delhi | Delhi         | 110027  | 2017-10-18     | ACTIVE          |
+|           9 | CUST1009        | Kavita     | Joshi     | kavita@gmail.com | 9000000009 | 2001-03-09    | Female | Shastri Nagar  | Meerut    | Uttar Pradesh | 250004  | 2020-12-01     | ACTIVE          |
+|          10 | CUST1010        | Mohit      | Agarwal   | mohit@gmail.com  | 9000000010 | 1996-10-27    | Male   | Civil Lines    | Meerut    | Uttar Pradesh | 250001  | 2016-07-07     | ACTIVE          |
++-------------+-----------------+------------+-----------+------------------+------------+---------------+--------+----------------+-----------+---------------+---------+----------------+-----------------+
+10 rows in set (0.0020 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM employees;
++-------------+---------------+-----------+---------------+----------------+----------------------+------------+----------+--------------+--------+
+| employee_id | employee_code | branch_id | employee_name | job_role       | email                | phone      | salary   | joining_date | status |
++-------------+---------------+-----------+---------------+----------------+----------------------+------------+----------+--------------+--------+
+|           1 | EMP001        |         1 | Amit Sharma   | Branch Manager | amit@rrgibank.com    | 9100000001 | 85000.00 | 2010-04-15   | ACTIVE |
+|           2 | EMP002        |         1 | Pooja Singh   | Cashier        | pooja@rrgibank.com   | 9100000002 | 42000.00 | 2018-06-10   | ACTIVE |
+|           3 | EMP003        |         2 | Priya Verma   | Branch Manager | priya@rrgibank.com   | 9100000003 | 90000.00 | 2012-07-20   | ACTIVE |
+|           4 | EMP004        |         2 | Ravi Kumar    | Accountant     | ravi@rrgibank.com    | 9100000004 | 55000.00 | 2019-01-15   | ACTIVE |
+|           5 | EMP005        |         3 | Rahul Singh   | Branch Manager | rahul@rrgibank.com   | 9100000005 | 88000.00 | 2015-01-10   | ACTIVE |
+|           6 | EMP006        |         3 | Nisha Gupta   | Cashier        | nisha@rrgibank.com   | 9100000006 | 40000.00 | 2020-04-12   | ACTIVE |
+|           7 | EMP007        |         4 | Neha Gupta    | Branch Manager | neha@rrgibank.com    | 9100000007 | 82000.00 | 2016-09-05   | ACTIVE |
+|           8 | EMP008        |         4 | Sandeep Yadav | Loan Officer   | sandeep@rrgibank.com | 9100000008 | 60000.00 | 2021-02-18   | ACTIVE |
+|           9 | EMP009        |         5 | Vikas Yadav   | Branch Manager | vikas@rrgibank.com   | 9100000009 | 87000.00 | 2018-03-12   | ACTIVE |
+|          10 | EMP010        |         5 | Anjali Mehta  | Accountant     | anjali@rrgibank.com  | 9100000010 | 53000.00 | 2022-07-20   | ACTIVE |
++-------------+---------------+-----------+---------------+----------------+----------------------+------------+----------+--------------+--------+
+10 rows in set (0.0041 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM accounts;
++------------+-------------+-----------+----------------+--------------+-----------+-----------------+-------------+--------+----------+
+| account_id | customer_id | branch_id | account_number | account_type | balance   | minimum_balance | opened_date | status | currency |
++------------+-------------+-----------+----------------+--------------+-----------+-----------------+-------------+--------+----------+
+|          1 |           1 |         1 | 100000000001   | SAVINGS      |  85000.00 |         5000.00 | 2021-06-10  | ACTIVE | INR      |
+|          2 |           1 |         1 | 100000000002   | CURRENT      | 250000.00 |        10000.00 | 2022-02-15  | ACTIVE | INR      |
+|          3 |           2 |         3 | 100000000003   | SAVINGS      | 125000.00 |         5000.00 | 2020-03-15  | ACTIVE | INR      |
+|          4 |           3 |         2 | 100000000004   | SAVINGS      |  95000.00 |         5000.00 | 2022-01-20  | ACTIVE | INR      |
+|          5 |           4 |         1 | 100000000005   | CURRENT      | 310000.00 |        10000.00 | 2019-08-11  | ACTIVE | INR      |
+|          6 |           5 |         1 | 100000000006   | SAVINGS      |  67000.00 |         5000.00 | 2021-11-09  | ACTIVE | INR      |
+|          7 |           6 |         3 | 100000000007   | SALARY       | 145000.00 |            0.00 | 2018-05-22  | ACTIVE | INR      |
+|          8 |           7 |         5 | 100000000008   | SAVINGS      |  43000.00 |         5000.00 | 2023-02-14  | ACTIVE | INR      |
+|          9 |           8 |         2 | 100000000009   | CURRENT      | 275000.00 |        10000.00 | 2017-10-18  | ACTIVE | INR      |
+|         10 |           9 |         4 | 100000000010   | SAVINGS      |  89000.00 |         5000.00 | 2020-12-01  | ACTIVE | INR      |
+|         11 |          10 |         4 | 100000000011   | SAVINGS      | 156000.00 |         5000.00 | 2016-07-07  | ACTIVE | INR      |
+|         12 |           2 |         3 | 100000000012   | FD           | 500000.00 |            0.00 | 2024-01-10  | ACTIVE | INR      |
+|         13 |           3 |         2 | 100000000013   | CURRENT      | 185000.00 |        10000.00 | 2023-06-15  | ACTIVE | INR      |
+|         14 |           6 |         3 | 100000000014   | SAVINGS      |  72000.00 |         5000.00 | 2021-09-20  | ACTIVE | INR      |
+|         15 |           8 |         2 | 100000000015   | SAVINGS      | 198000.00 |         5000.00 | 2019-04-25  | ACTIVE | INR      |
++------------+-------------+-----------+----------------+--------------+-----------+-----------------+-------------+--------+----------+
+15 rows in set (0.0011 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM transactions;
++----------------+------------+------------------+------------------+-----------+---------------------+------------------+------------------+---------------+--------------------+-----------+
+| transaction_id | account_id | transaction_type | transaction_mode | amount    | transaction_date    | description      | reference_number | balance_after | transaction_status | location  |
++----------------+------------+------------------+------------------+-----------+---------------------+------------------+------------------+---------------+--------------------+-----------+
+|           1001 |          1 | DEPOSIT          | BRANCH           |  50000.00 | 2026-01-05 10:15:00 | Cash Deposit     | TXN100001        |      85000.00 | SUCCESS            | Ghaziabad |
+|           1002 |          1 | WITHDRAWAL       | ATM              |  10000.00 | 2026-01-10 14:20:00 | ATM Withdrawal   | TXN100002        |      75000.00 | SUCCESS            | Ghaziabad |
+|           1003 |          1 | DEPOSIT          | UPI              |  20000.00 | 2026-01-15 09:30:00 | UPI Deposit      | TXN100003        |      95000.00 | SUCCESS            | Ghaziabad |
+|           1004 |          2 | DEPOSIT          | NEFT             | 100000.00 | 2026-01-06 11:00:00 | NEFT Credit      | TXN100004        |     250000.00 | SUCCESS            | Ghaziabad |
+|           1005 |          2 | WITHDRAWAL       | BRANCH           |  25000.00 | 2026-01-12 12:10:00 | Cash Withdrawal  | TXN100005        |     225000.00 | SUCCESS            | Ghaziabad |
+|           1006 |          3 | DEPOSIT          | UPI              |  30000.00 | 2026-01-03 08:45:00 | UPI Deposit      | TXN100006        |     125000.00 | SUCCESS            | Noida     |
+|           1007 |          3 | WITHDRAWAL       | ATM              |  15000.00 | 2026-01-08 18:20:00 | ATM Withdrawal   | TXN100007        |     110000.00 | SUCCESS            | Noida     |
+|           1008 |          4 | DEPOSIT          | NEFT             |  45000.00 | 2026-01-09 10:30:00 | NEFT Credit      | TXN100008        |      95000.00 | SUCCESS            | Delhi     |
+|           1009 |          4 | PAYMENT          | UPI              |   5000.00 | 2026-01-14 16:40:00 | Online Payment   | TXN100009        |      90000.00 | SUCCESS            | Delhi     |
+|           1010 |          5 | DEPOSIT          | BRANCH           |  75000.00 | 2026-01-02 11:15:00 | Cash Deposit     | TXN100010        |     310000.00 | SUCCESS            | Ghaziabad |
+|           1011 |          5 | WITHDRAWAL       | ATM              |  20000.00 | 2026-01-11 13:25:00 | ATM Withdrawal   | TXN100011        |     290000.00 | SUCCESS            | Ghaziabad |
+|           1012 |          6 | DEPOSIT          | UPI              |  25000.00 | 2026-01-04 09:15:00 | UPI Credit       | TXN100012        |      67000.00 | SUCCESS            | Ghaziabad |
+|           1013 |          6 | PAYMENT          | UPI              |   3500.00 | 2026-01-18 19:10:00 | Bill Payment     | TXN100013        |      63500.00 | SUCCESS            | Ghaziabad |
+|           1014 |          7 | DEPOSIT          | NEFT             |  60000.00 | 2026-01-05 10:00:00 | Salary Credit    | TXN100014        |     145000.00 | SUCCESS            | Noida     |
+|           1015 |          7 | WITHDRAWAL       | ATM              |  10000.00 | 2026-01-09 17:30:00 | ATM Withdrawal   | TXN100015        |     135000.00 | SUCCESS            | Noida     |
+|           1016 |          8 | DEPOSIT          | UPI              |  15000.00 | 2026-01-07 08:30:00 | UPI Deposit      | TXN100016        |      43000.00 | SUCCESS            | Lucknow   |
+|           1017 |          8 | PAYMENT          | MOBILE_APP       |   2500.00 | 2026-01-16 20:15:00 | Mobile Payment   | TXN100017        |      40500.00 | SUCCESS            | Lucknow   |
+|           1018 |          9 | DEPOSIT          | NEFT             |  85000.00 | 2026-01-03 12:00:00 | Business Credit  | TXN100018        |     275000.00 | SUCCESS            | Delhi     |
+|           1019 |          9 | WITHDRAWAL       | ATM              |  30000.00 | 2026-01-13 15:45:00 | ATM Withdrawal   | TXN100019        |     245000.00 | SUCCESS            | Delhi     |
+|           1020 |         10 | DEPOSIT          | BRANCH           |  40000.00 | 2026-01-04 11:30:00 | Cash Deposit     | TXN100020        |      89000.00 | SUCCESS            | Meerut    |
+|           1021 |         10 | PAYMENT          | UPI              |   7000.00 | 2026-01-17 14:20:00 | Shopping Payment | TXN100021        |      82000.00 | SUCCESS            | Meerut    |
+|           1022 |         11 | DEPOSIT          | NEFT             |  70000.00 | 2026-01-06 10:10:00 | NEFT Credit      | TXN100022        |     156000.00 | SUCCESS            | Meerut    |
+|           1023 |         11 | WITHDRAWAL       | ATM              |  12000.00 | 2026-01-15 16:30:00 | ATM Withdrawal   | TXN100023        |     144000.00 | SUCCESS            | Meerut    |
+|           1024 |         12 | DEPOSIT          | BRANCH           | 500000.00 | 2026-01-10 13:00:00 | Fixed Deposit    | TXN100024        |     500000.00 | SUCCESS            | Noida     |
+|           1025 |         13 | DEPOSIT          | UPI              |  50000.00 | 2026-01-08 09:40:00 | UPI Credit       | TXN100025        |     185000.00 | SUCCESS            | Delhi     |
+|           1026 |         13 | PAYMENT          | NET_BANKING      |  15000.00 | 2026-01-19 11:50:00 | Online Payment   | TXN100026        |     170000.00 | SUCCESS            | Delhi     |
+|           1027 |         14 | DEPOSIT          | NEFT             |  30000.00 | 2026-01-11 10:20:00 | Salary Credit    | TXN100027        |      72000.00 | SUCCESS            | Noida     |
+|           1028 |         14 | WITHDRAWAL       | ATM              |   8000.00 | 2026-01-20 18:00:00 | ATM Withdrawal   | TXN100028        |      64000.00 | SUCCESS            | Noida     |
+|           1029 |         15 | DEPOSIT          | UPI              |  90000.00 | 2026-01-12 09:00:00 | UPI Credit       | TXN100029        |     198000.00 | SUCCESS            | Delhi     |
+|           1030 |         15 | PAYMENT          | NET_BANKING      |  22000.00 | 2026-01-21 12:45:00 | Online Shopping  | TXN100030        |     176000.00 | SUCCESS            | Delhi     |
++----------------+------------+------------------+------------------+-----------+---------------------+------------------+------------------+---------------+--------------------+-----------+
+30 rows in set (0.0014 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM cards;
++---------+-------------+------------+------------------+-----------+--------------+------------+-------------+---------+--------------+
+| card_id | customer_id | account_id | card_number      | card_type | card_network | issue_date | expiry_date | status  | credit_limit |
++---------+-------------+------------+------------------+-----------+--------------+------------+-------------+---------+--------------+
+|       1 |           1 |          1 | 4567000000000001 | DEBIT     | VISA         | 2021-06-15 | 2026-06-30  | ACTIVE  |         NULL |
+|       2 |           2 |          3 | 4567000000000002 | DEBIT     | RUPAY        | 2020-04-01 | 2025-04-30  | EXPIRED |         NULL |
+|       3 |           3 |          4 | 4567000000000003 | DEBIT     | MASTERCARD   | 2022-02-01 | 2027-02-28  | ACTIVE  |         NULL |
+|       4 |           4 |          5 | 4567000000000004 | CREDIT    | VISA         | 2020-01-10 | 2026-01-31  | ACTIVE  |    200000.00 |
+|       5 |           5 |          6 | 4567000000000005 | DEBIT     | RUPAY        | 2021-11-15 | 2026-11-30  | ACTIVE  |         NULL |
+|       6 |           6 |          7 | 4567000000000006 | DEBIT     | VISA         | 2018-06-01 | 2028-06-30  | ACTIVE  |         NULL |
+|       7 |           7 |          8 | 4567000000000007 | DEBIT     | RUPAY        | 2023-03-01 | 2028-03-31  | ACTIVE  |         NULL |
+|       8 |           8 |          9 | 4567000000000008 | CREDIT    | MASTERCARD   | 2019-01-15 | 2027-01-31  | ACTIVE  |    300000.00 |
+|       9 |           9 |         10 | 4567000000000009 | DEBIT     | VISA         | 2021-01-10 | 2026-01-31  | BLOCKED |         NULL |
+|      10 |          10 |         11 | 4567000000000010 | DEBIT     | RUPAY        | 2017-08-01 | 2027-08-31  | ACTIVE  |         NULL |
++---------+-------------+------------+------------------+-----------+--------------+------------+-------------+---------+--------------+
+10 rows in set (0.0036 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM card_transactions;
++---------------------+---------+----------+------------------+-------------------+---------------------+-----------+--------------------+------------------+-----------------+
+| card_transaction_id | card_id | amount   | merchant_name    | merchant_category | transaction_date    | city      | transaction_status | reference_number | payment_channel |
++---------------------+---------+----------+------------------+-------------------+---------------------+-----------+--------------------+------------------+-----------------+
+|                2001 |       1 |  1200.00 | Amazon           | Shopping          | 2026-01-05 19:20:00 | Ghaziabad | SUCCESS            | CARDTXN001       | ONLINE          |
+|                2002 |       1 |   450.00 | Dominos          | Food              | 2026-01-07 20:15:00 | Ghaziabad | SUCCESS            | CARDTXN002       | POS             |
+|                2003 |       3 |  2500.00 | Flipkart         | Shopping          | 2026-01-08 15:30:00 | Delhi     | SUCCESS            | CARDTXN003       | ONLINE          |
+|                2004 |       4 |  8500.00 | Reliance Digital | Electronics       | 2026-01-09 17:45:00 | Ghaziabad | SUCCESS            | CARDTXN004       | POS             |
+|                2005 |       4 |  3200.00 | Myntra           | Shopping          | 2026-01-12 18:20:00 | Delhi     | SUCCESS            | CARDTXN005       | ONLINE          |
+|                2006 |       5 |   900.00 | Big Bazaar       | Grocery           | 2026-01-10 11:30:00 | Ghaziabad | SUCCESS            | CARDTXN006       | POS             |
+|                2007 |       6 |  1500.00 | Swiggy           | Food              | 2026-01-11 21:00:00 | Noida     | SUCCESS            | CARDTXN007       | ONLINE          |
+|                2008 |       6 |   700.00 | Uber             | Travel            | 2026-01-13 09:15:00 | Noida     | SUCCESS            | CARDTXN008       | ONLINE          |
+|                2009 |       7 |  1100.00 | Zomato           | Food              | 2026-01-14 20:45:00 | Lucknow   | SUCCESS            | CARDTXN009       | ONLINE          |
+|                2010 |       8 | 15000.00 | Croma            | Electronics       | 2026-01-15 16:30:00 | Delhi     | SUCCESS            | CARDTXN010       | POS             |
+|                2011 |       8 |  4500.00 | Amazon           | Shopping          | 2026-01-16 14:10:00 | Delhi     | SUCCESS            | CARDTXN011       | ONLINE          |
+|                2012 |       9 |  2200.00 | Apollo Pharmacy  | Healthcare        | 2026-01-17 12:20:00 | Meerut    | FAILED             | CARDTXN012       | POS             |
+|                2013 |      10 |  1800.00 | Reliance Trends  | Shopping          | 2026-01-18 17:30:00 | Meerut    | SUCCESS            | CARDTXN013       | POS             |
+|                2014 |       3 |   600.00 | Cafe Coffee Day  | Food              | 2026-01-19 18:45:00 | Delhi     | SUCCESS            | CARDTXN014       | CONTACTLESS     |
+|                2015 |       5 |  3500.00 | Shoppers Stop    | Shopping          | 2026-01-20 16:15:00 | Ghaziabad | SUCCESS            | CARDTXN015       | POS             |
++---------------------+---------+----------+------------------+-------------------+---------------------+-----------+--------------------+------------------+-----------------+
+15 rows in set (0.0016 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM beneficiaries;
++----------------+-------------+------------------+----------------+-----------+-------------+----------+------------+---------+
+| beneficiary_id | customer_id | beneficiary_name | account_number | bank_name | ifsc_code   | nickname | added_date | status  |
++----------------+-------------+------------------+----------------+-----------+-------------+----------+------------+---------+
+|              1 |           1 | Rahul Sharma     | 200000000001   | RRGI Bank | RRGI0000003 | Rahul    | 2025-01-10 | ACTIVE  |
+|              2 |           1 | Priya Singh      | 200000000002   | RRGI Bank | RRGI0000002 | Priya    | 2025-02-15 | ACTIVE  |
+|              3 |           2 | Arun Kumar       | 200000000003   | RRGI Bank | RRGI0000001 | Arun     | 2024-08-12 | ACTIVE  |
+|              4 |           3 | Neha Gupta       | 200000000004   | RRGI Bank | RRGI0000004 | Neha     | 2025-03-20 | ACTIVE  |
+|              5 |           4 | Rohit Yadav      | 200000000005   | RRGI Bank | RRGI0000003 | Rohit    | 2024-11-05 | ACTIVE  |
+|              6 |           5 | Sneha Patel      | 200000000006   | RRGI Bank | RRGI0000005 | Sneha    | 2025-01-25 | ACTIVE  |
+|              7 |           6 | Vikas Mehta      | 200000000007   | RRGI Bank | RRGI0000002 | Vikas    | 2024-06-18 | ACTIVE  |
+|              8 |           7 | Kavita Joshi     | 200000000008   | RRGI Bank | RRGI0000004 | Kavita   | 2025-04-10 | ACTIVE  |
+|              9 |           8 | Mohit Agarwal    | 200000000009   | RRGI Bank | RRGI0000004 | Mohit    | 2024-09-22 | BLOCKED |
+|             10 |           9 | Ankit Verma      | 200000000010   | RRGI Bank | RRGI0000001 | Ankit    | 2025-02-01 | ACTIVE  |
++----------------+-------------+------------------+----------------+-----------+-------------+----------+------------+---------+
+10 rows in set (0.0011 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL > SELECT * FROM transfers;
++-------------+-------------------+---------------------+----------+---------------+---------------------+------------------+-----------------+---------------------+
+| transfer_id | sender_account_id | receiver_account_id | amount   | transfer_mode | transfer_date       | reference_number | transfer_status | remarks             |
++-------------+-------------------+---------------------+----------+---------------+---------------------+------------------+-----------------+---------------------+
+|        3001 |                 1 |                   3 |  5000.00 | UPI           | 2026-01-05 12:30:00 | TRF000001        | SUCCESS         | Personal transfer   |
+|        3002 |                 3 |                   4 | 10000.00 | IMPS          | 2026-01-06 14:20:00 | TRF000002        | SUCCESS         | Money transfer      |
+|        3003 |                 5 |                   1 | 15000.00 | NEFT          | 2026-01-07 10:45:00 | TRF000003        | SUCCESS         | Business payment    |
+|        3004 |                 7 |                   8 |  8000.00 | UPI           | 2026-01-08 18:10:00 | TRF000004        | SUCCESS         | Personal transfer   |
+|        3005 |                 9 |                  10 | 12000.00 | NEFT          | 2026-01-09 11:30:00 | TRF000005        | SUCCESS         | Fund transfer       |
+|        3006 |                11 |                  13 | 20000.00 | IMPS          | 2026-01-10 15:00:00 | TRF000006        | SUCCESS         | Payment transfer    |
+|        3007 |                 6 |                   2 |  7000.00 | UPI           | 2026-01-11 09:40:00 | TRF000007        | SUCCESS         | Personal transfer   |
+|        3008 |                 4 |                   6 |  9000.00 | NEFT          | 2026-01-12 13:15:00 | TRF000008        | SUCCESS         | Fund transfer       |
+|        3009 |                 8 |                  15 | 11000.00 | UPI           | 2026-01-13 17:20:00 | TRF000009        | SUCCESS         | Payment             |
+|        3010 |                10 |                  11 |  6000.00 | IMPS          | 2026-01-14 12:00:00 | TRF000010        | SUCCESS         | Money transfer      |
+|        3011 |                 2 |                   5 | 25000.00 | NEFT          | 2026-01-15 10:30:00 | TRF000011        | SUCCESS         | Business transfer   |
+|        3012 |                13 |                   9 | 18000.00 | RTGS          | 2026-01-16 16:45:00 | TRF000012        | SUCCESS         | Large transfer      |
+|        3013 |                14 |                   3 |  5000.00 | UPI           | 2026-01-17 19:00:00 | TRF000013        | SUCCESS         | Personal transfer   |
+|        3014 |                15 |                   7 | 13000.00 | IMPS          | 2026-01-18 14:30:00 | TRF000014        | PENDING         | Transfer pending    |
+|        3015 |                 5 |                  12 | 50000.00 | NEFT          | 2026-01-19 11:15:00 | TRF000015        | SUCCESS         | FD related transfer |
++-------------+-------------------+---------------------+----------+---------------+---------------------+------------------+-----------------+---------------------+
+15 rows in set (0.0012 sec)
+ MySQL  localhost:33060+ ssl  banking_db  SQL >

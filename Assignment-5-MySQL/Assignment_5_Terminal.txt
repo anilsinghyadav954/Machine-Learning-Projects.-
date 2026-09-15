@@ -1,0 +1,665 @@
+Microsoft Windows [Version 10.0.26200.9278]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Anuj Kumar>mysqlsh
+MySQL Shell 8.0.46
+
+Copyright (c) 2016, 2026, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect root@localhost
+Creating a session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 11 (X protocol)
+Server version: 8.0.46 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:33060+ ssl  SQL > \use rrgi
+Default schema set to `rrgi`.
+Fetching global names, object names from `rrgi` for auto-completion... Press ^C to stop.
+ MySQL  localhost:33060+ ssl  ... SQL > SHOW TABLES;
++----------------+
+| Tables_in_rrgi |
++----------------+
+| employee       |
+| student_table  |
+| teacher_table  |
++----------------+
+3 rows in set (0.0020 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > CREATE TABLE employee_assignment5 (
+                                     ->     emp_id INT PRIMARY KEY,
+                                     ->     emp_name VARCHAR(45),
+                                     ->     emp_age INT,
+                                     ->     emp_department VARCHAR(30),
+                                     ->     emp_salary INT,
+                                     ->     emp_city VARCHAR(45)
+                                     -> );
+Query OK, 0 rows affected (0.0274 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > DESC employee_assignment5;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| emp_id         | int         | NO   | PRI | NULL    |       |
+| emp_name       | varchar(45) | YES  |     | NULL    |       |
+| emp_age        | int         | YES  |     | NULL    |       |
+| emp_department | varchar(30) | YES  |     | NULL    |       |
+| emp_salary     | int         | YES  |     | NULL    |       |
+| emp_city       | varchar(45) | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+6 rows in set (0.0027 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SHOW TABLES;
++----------------------+
+| Tables_in_rrgi       |
++----------------------+
+| employee             |
+| employee_assignment5 |
+| student_table        |
+| teacher_table        |
++----------------------+
+4 rows in set (0.0020 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > INSERT INTO employee_assignment5
+                                     -> VALUES
+                                     -> (101, 'Aditya', 19, 'IT', 60000, 'Delhi'),
+                                     -> (102, 'Aman', 20, 'HR', 65000, 'Delhi'),
+                                     -> (103, 'Arun', 22, 'IT', 68000, 'Lucknow'),
+                                     -> (104, 'Anil', 21, 'CSE', 70000, 'Hydrabad'),
+                                     -> (105, 'Saurabh', 21, 'CSD', 960000, 'Sitapur'),
+                                     -> (106, 'Shivam', 21, 'IT', 899999, 'Jaunpur'),
+                                     -> (107, 'Krishna', 22, 'HR', 78000, 'Lucknow'),
+                                     -> (108, 'Adarsh', 22, 'CSE', 69000, 'Delhi'),
+                                     -> (109, 'Chandan', 21, 'IT', 80000, 'Ballia'),
+                                     -> (110, 'Sunil', 21, 'IT', 90000, 'Jaunpur');
+Query OK, 10 rows affected (0.0092 sec)
+
+Records: 10  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT * FROM employee_assignment5;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |     960000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |
++--------+----------+---------+----------------+------------+----------+
+10 rows in set (0.0011 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > UPDATE employee_assignment5
+                                     -> SET emp_salary = 10000000
+                                     -> WHERE emp_name = 'Saurabh';
+Query OK, 1 row affected (0.0068 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_name = 'Saurabh';
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
++--------+----------+---------+----------------+------------+----------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > UPDATE employee_assignment5
+                                     -> SET emp_city = 'Lucknow'
+                                     -> WHERE emp_id = 101;
+Query OK, 1 row affected (0.0068 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_id = 101;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+1 row in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > DELETE FROM employee_assignment5
+                                     -> WHERE emp_id = 110;
+Query OK, 1 row affected (0.0068 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT * FROM employee_assignment5;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+9 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_salary > 50000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+9 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_department = 'IT';
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+4 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_city = 'Lucknow';
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+3 rows in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_salary BETWEEN 40000 AND 60000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_name LIKE 'A%';
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
++--------+----------+---------+----------------+------------+----------+
+5 rows in set (0.0024 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_name LIKE '%a';
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+2 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_department = 'IT'
+                                     ->    OR emp_department = 'HR';
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+6 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_department IN ('IT', 'HR');
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+6 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_age > 25
+                                     -> AND emp_salary > 50000;
+Empty set (0.0006 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_salary IS NULL;
+Empty set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> WHERE emp_salary IS NOT NULL;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+9 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> ORDER BY emp_salary ASC;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
++--------+----------+---------+----------------+------------+----------+
+9 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT *
+                                     -> FROM employee_assignment5
+                                     -> ORDER BY emp_salary DESC;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+9 rows in set (0.0011 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT emp_department,
+                                     ->        COUNT(emp_name) AS Number_Of_emp
+                                     -> FROM employee_assignment5
+                                     -> GROUP BY emp_department;
++----------------+---------------+
+| emp_department | Number_Of_emp |
++----------------+---------------+
+| IT             |             4 |
+| HR             |             2 |
+| CSE            |             2 |
+| CSD            |             1 |
++----------------+---------------+
+4 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  ... SQL > SELECT emp_department,
+                                     ->        AVG(emp_salary) AS avg_salary
+                                     -> FROM employee_assignment5
+                                     -> GROUP BY emp_department;
++----------------+---------------+
+| emp_department | avg_salary    |
++----------------+---------------+
+| IT             |   276999.7500 |
+| HR             |    71500.0000 |
+| CSE            |    69500.0000 |
+| CSD            | 10000000.0000 |
++----------------+---------------+      SELECT emp_department,
+                                     ->        MAX(emp_salary) AS max_salary
+                                     -> FROM employee_assignment5
+                                     -> GROUP BY emp_department;
++----------------+------------+
+| emp_department | max_salary |
++----------------+------------+
+| IT             |     899999 |
+| HR             |      78000 |
+| CSE            |      70000 |
+| CSD            |   10000000 |
++----------------+------------+
+4 rows in set (0.0013 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> HAVING COUNT(emp_name) > 5;
+Empty set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> HAVING AVG(emp_salary) > 60000;
++----------------+
+| emp_department |
++----------------+
+| IT             |
+| HR             |
+| CSE            |
+| CSD            |
++----------------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department,
+                                       ->        AVG(emp_salary) AS avg_salary
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> ORDER BY AVG(emp_salary) ASC;
++----------------+---------------+
+| emp_department | avg_salary    |
++----------------+---------------+
+| CSE            |    69500.0000 |
+| HR             |    71500.0000 |
+| IT             |   276999.7500 |
+| CSD            | 10000000.0000 |
++----------------+---------------+
+4 rows in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_city,
+                                       ->        COUNT(emp_name) AS Number_Of_emp
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_city;
++----------+---------------+
+| emp_city | Number_Of_emp |
++----------+---------------+
+| Lucknow  |             3 |
+| Delhi    |             2 |
+| Hydrabad |             1 |
+| Sitapur  |             1 |
+| Jaunpur  |             1 |
+| Ballia   |             1 |
++----------+---------------+
+6 rows in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_city
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_city
+                                       -> HAVING COUNT(emp_name) > 3;
+Empty set (0.0013 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT COUNT(*) AS total_employees
+                                       -> FROM employee_assignment5;
++-----------------+
+| total_employees |
++-----------------+
+|               9 |
++-----------------+
+1 row in set (0.0073 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT SUM(emp_salary) AS total_salary
+                                       -> FROM employee_assignment5;
++--------------+
+| total_salary |
++--------------+
+|     11389999 |
++--------------+
+1 row in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT AVG(emp_salary) AS average_salary
+                                       -> FROM employee_assignment5;
++----------------+
+| average_salary |
++----------------+
+|   1265555.4444 |
++----------------+
+1 row in set (0.0034 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT MAX(emp_salary) AS maximum_salary
+                                       -> FROM employee_assignment5;
++----------------+
+| maximum_salary |
++----------------+
+|       10000000 |
++----------------+
+1 row in set (0.0025 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT MIN(emp_salary) AS minimum_salary
+                                       -> FROM employee_assignment5;
++----------------+
+| minimum_salary |
++----------------+
+|          60000 |
++----------------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT AVG(emp_salary) AS avg_salary
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_department = 'IT';
++-------------+
+| avg_salary  |
++-------------+
+| 276999.7500 |
++-------------+
+1 row in set (0.0027 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT MAX(emp_salary) AS highest_salary
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_department = 'HR';
++----------------+
+| highest_salary |
++----------------+
+|          78000 |
++----------------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT SUM(emp_salary) AS total_salary
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_department = 'Finance';
++--------------+
+| total_salary |
++--------------+
+|         NULL |
++--------------+
+1 row in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT COUNT(*) AS Number_Of_emp
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_city = 'Delhi';
++---------------+
+| Number_Of_emp |
++---------------+
+|             2 |
++---------------+
+1 row in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT AVG(emp_salary) AS avg_salary
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_salary > 50000;
++--------------+
+| avg_salary   |
++--------------+
+| 1265555.4444 |
++--------------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department,
+                                       ->        SUM(emp_salary) AS total_salary
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department;
++----------------+--------------+
+| emp_department | total_salary |
++----------------+--------------+
+| IT             |      1107999 |
+| HR             |       143000 |
+| CSE            |       139000 |
+| CSD            |     10000000 |
++----------------+--------------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department,
+                                       ->        AVG(emp_salary) AS avg_salary
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department;
++----------------+---------------+
+| emp_department | avg_salary    |
++----------------+---------------+
+| IT             |   276999.7500 |
+| HR             |    71500.0000 |
+| CSE            |    69500.0000 |
+| CSD            | 10000000.0000 |
++----------------+---------------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department,
+                                       ->        AVG(emp_salary) AS avg_salary
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> ORDER BY AVG(emp_salary) DESC
+                                       -> LIMIT 1;
++----------------+---------------+
+| emp_department | avg_salary    |
++----------------+---------------+
+| CSD            | 10000000.0000 |
++----------------+---------------+
+1 row in set (0.0031 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department,
+                                       ->        SUM(emp_salary) AS total_salary
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> ORDER BY SUM(emp_salary) DESC
+                                       -> LIMIT 1;
++----------------+--------------+
+| emp_department | total_salary |
++----------------+--------------+
+| CSD            |     10000000 |
++----------------+--------------+
+1 row in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department,
+                                       ->        SUM(emp_salary) AS total_salary
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> ORDER BY SUM(emp_salary) DESC
+                                       -> LIMIT 1;
++----------------+--------------+
+| emp_department | total_salary |
++----------------+--------------+
+| CSD            |     10000000 |
++----------------+--------------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_city,
+                                       ->        COUNT(emp_name) AS Number_Of_emp
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_city;
++----------+---------------+
+| emp_city | Number_Of_emp |
++----------+---------------+
+| Lucknow  |             3 |
+| Delhi    |             2 |
+| Hydrabad |             1 |
+| Sitapur  |             1 |
+| Jaunpur  |             1 |
+| Ballia   |             1 |
++----------+---------------+
+6 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT *
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_salary > 70000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT *
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_salary > 70000
+                                       -> AND emp_salary < 90000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+2 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT *
+                                       -> FROM employee_assignment5
+                                       -> WHERE emp_age > 21
+                                       -> AND emp_salary > 70000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+1 row in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> HAVING COUNT(emp_name) > 2;
++----------------+
+| emp_department |
++----------------+
+| IT             |
++----------------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_department
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_department
+                                       -> HAVING AVG(emp_salary) > 70000;
++----------------+
+| emp_department |
++----------------+
+| IT             |
+| HR             |
+| CSD            |
++----------------+
+3 rows in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT emp_city
+                                       -> FROM employee_assignment5
+                                       -> GROUP BY emp_city
+                                       -> HAVING COUNT(emp_name) > 1;
++----------+
+| emp_city |
++----------+
+| Lucknow  |
+| Delhi    |
++----------+
+2 rows in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT * FROM employee_assignment5;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+9 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SELECT COUNT(*) AS total_employees
+                                       -> FROM employee_assignment5;
++-----------------+
+| total_employees |
++-----------------+
+|               9 |
++-----------------+
+1 row in set (0.0019 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > DESC employee_assignment5;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| emp_id         | int         | NO   | PRI | NULL    |       |
+| emp_name       | varchar(45) | YES  |     | NULL    |       |
+| emp_age        | int         | YES  |     | NULL    |       |
+| emp_department | varchar(30) | YES  |     | NULL    |       |
+| emp_salary     | int         | YES  |     | NULL    |       |
+| emp_city       | varchar(45) | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+6 rows in set (0.0026 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > SHOW TABLES;
++----------------------+
+| Tables_in_rrgi       |
++----------------------+
+| employee             |
+| employee_assignment5 |
+| student_table        |
+| teacher_table        |
++----------------------+
+4 rows in set (0.0018 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL >
