@@ -1,0 +1,82 @@
+{
+    "next_acc_no": 1004,
+    "accounts": [
+        {
+            "acc_no": 1001,
+            "name": "Arun Kumar",
+            "balance": 1500.0,
+            "transactions": [
+                {
+                    "type": "DEPOSIT",
+                    "amount": 500.0,
+                    "balance_after": 500.0,
+                    "note": "",
+                    "timestamp": "2026-08-27 10:36:10"
+                },
+                {
+                    "type": "WITHDRAW",
+                    "amount": 200.0,
+                    "balance_after": 300.0,
+                    "note": "",
+                    "timestamp": "2026-08-27 10:36:53"
+                },
+                {
+                    "type": "DEPOSIT",
+                    "amount": 1200.0,
+                    "balance_after": 1500.0,
+                    "note": "",
+                    "timestamp": "2026-08-27 10:42:55"
+                },
+                {
+                    "type": "TRANSFER_IN",
+                    "amount": 1200.0,
+                    "balance_after": 1500.0,
+                    "note": "From A/C 1002",
+                    "timestamp": "2026-08-27 10:42:55"
+                }
+            ]
+        },
+        {
+            "acc_no": 1002,
+            "name": "Anshuman Yadav",
+            "balance": 800.0,
+            "transactions": [
+                {
+                    "type": "DEPOSIT",
+                    "amount": 2000.0,
+                    "balance_after": 2000.0,
+                    "note": "",
+                    "timestamp": "2026-08-27 10:41:22"
+                },
+                {
+                    "type": "WITHDRAW",
+                    "amount": 1200.0,
+                    "balance_after": 800.0,
+                    "note": "",
+                    "timestamp": "2026-08-27 10:42:55"
+                },
+                {
+                    "type": "TRANSFER_OUT",
+                    "amount": 1200.0,
+                    "balance_after": 800.0,
+                    "note": "To A/C 1001",
+                    "timestamp": "2026-08-27 10:42:55"
+                }
+            ]
+        },
+        {
+            "acc_no": 1003,
+            "name": "KM",
+            "balance": 3000.0,
+            "transactions": [
+                {
+                    "type": "DEPOSIT",
+                    "amount": 3000.0,
+                    "balance_after": 3000.0,
+                    "note": "",
+                    "timestamp": "2026-08-27 11:01:10"
+                }
+            ]
+        }
+    ]
+}

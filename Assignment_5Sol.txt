@@ -1,0 +1,293 @@
+ MySQL  localhost:33060+ ssl  rrgi  SQL > insert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Ainsert into employee value (101, "Aditya", 19, "IT", 60000, "Delhi"),(102,  MySQL  localhost:33060+ ssl  rrgi  SQL > insert into employee (101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi"),(103, "Arun", 22, "IT", 68000, "Lucknow"),(104, "Anil", 21, "CSE", 70000, "Hydrabad"),(105, "Saurabh", 21, "CSD", 960000, "Sitapur"),(106, "Shivam", 21, "IT", 899999, "Jaunpur"),(107, "Krishna", 22, "HR", 78000, "Lucknow"),(108, "Adarsh", 22, "CSE", 69000, "Delhi"),(109, "Chandan", 21, "IT", 80000, "Ballia"),(110, "Sunil", 21, "IT", 90000, "Jaunpur");
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '101, "Aditya", 19, "IT", 60000, "Delhi"),(102, "Aman", 20, "HR", 65000, "Delhi")' at l MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |     960000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |
++--------+----------+---------+----------------+------------+----------+
+10 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_name from employee where emp_city = "Sitapur";
++----------+
+| emp_name |
++----------+
+| Saurabh  |
++----------+
+1 row in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > update from employee set emp_salary = 10000000 where emp_name = "Saurabh";
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from employee set emp_salary = 10000000 where emp_name = "Saurabh"' at line 1
+ MySQL  localhost:33060+ ssl  rrgi  SQL > update employee set emp_salary = 10000000 where emp_name = "Saurabh";
+Query OK, 1 row affected (0.0038 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_name from employee where emp_city = "Sitapur";
++----------+
+| emp_name |
++----------+
+| Saurabh  |
++----------+
+1 row in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | Anil     |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |
++--------+----------+---------+----------------+------------+----------+
+10 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > update employee set emp_name = "XYZ" where emp_id=104;
+Query OK, 1 row affected (0.0042 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    104 | XYZ      |      21 | CSE            |      70000 | Hydrabad |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |
++--------+----------+---------+----------------+------------+----------+
+10 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_salary>70000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |
++--------+----------+---------+----------------+------------+----------+
+5 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_department = "IT";
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |
++--------+----------+---------+----------------+------------+----------+
+5 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_city = "Lucknow";
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+2 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_salary>70000 and emp_salary<90000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
++--------+----------+---------+----------------+------------+----------+
+2 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_name = "a_";
+Empty set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_name = "A_";
+Empty set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_name = "A%";
+Empty set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_name = "A_%";
+Empty set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_name = "A_";
+Empty set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_name like "A%";
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
++--------+----------+---------+----------------+------------+----------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_name like "%a";
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+2 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_department = "IT" or emp_department = "HR";
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    101 | Aditya   |      19 | IT             |      60000 | Delhi    |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    110 | Sunil    |      21 | IT             |      90000 | Jaunpur  |
++--------+----------+---------+----------------+------------+----------+
+7 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee where emp_age > 21 and emp_salary > 70000;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
++--------+----------+---------+----------------+------------+----------+
+1 row in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > delete from employee where emp_id = 110;
+Query OK, 1 row affected (0.0045 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > delete from employee where emp_name = "Aditya";
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee order by emp_salary ASC;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    104 | XYZ      |      21 | CSE            |      70000 | Hydrabad |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
++--------+----------+---------+----------------+------------+----------+
+8 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select * from employee order by emp_salary DESC;
++--------+----------+---------+----------------+------------+----------+
+| emp_id | emp_name | emp_age | emp_department | emp_salary | emp_city |
++--------+----------+---------+----------------+------------+----------+
+|    105 | Saurabh  |      21 | CSD            |   10000000 | Sitapur  |
+|    106 | Shivam   |      21 | IT             |     899999 | Jaunpur  |
+|    109 | Chandan  |      21 | IT             |      80000 | Ballia   |
+|    107 | Krishna  |      22 | HR             |      78000 | Lucknow  |
+|    104 | XYZ      |      21 | CSE            |      70000 | Hydrabad |
+|    108 | Adarsh   |      22 | CSE            |      69000 | Delhi    |
+|    103 | Arun     |      22 | IT             |      68000 | Lucknow  |
+|    102 | Aman     |      20 | HR             |      65000 | Delhi    |
++--------+----------+---------+----------------+------------+----------+
+8 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department, count(emp_name) from employee where group by emp_department;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'group by emp_department' at line 1
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department, count(emp_name) from employee group by emp_department;
++----------------+-----------------+
+| emp_department | count(emp_name) |
++----------------+-----------------+
+| HR             |               2 |
+| IT             |               3 |
+| CSE            |               2 |
+| CSD            |               1 |
++----------------+-----------------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department, avg(emp_salary) from employee group by emp_department;
++----------------+-----------------+
+| emp_department | avg(emp_salary) |
++----------------+-----------------+
+| HR             |           71500 |
+| IT             |          349333 |
+| CSE            |           69500 |
+| CSD            |        10000000 |
++----------------+-----------------+
+4 rows in set (0.0025 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department, max(emp_salary) from employee group by emp_salary>(select * from employee);
+ERROR: 1241: Operand should contain 1 column(s)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department, max(emp_salary) as max_salary from employee group by emp_department;
++----------------+------------+
+| emp_department | max_salary |
++----------------+------------+
+| HR             |      78000 |
+| IT             |     899999 |
+| CSE            |      70000 |
+| CSD            |   10000000 |
++----------------+------------+
+4 rows in set (0.0010 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department from employee group by emp_department where count(emp_name)>2;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where count(emp_name)>2' at line 1
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department where count(emp_name)>2 from employee group by emp_department;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from employee group by emp_department' at line 1
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department from employee group by emp_department having count(emp_name)>2;
++----------------+
+| emp_department |
++----------------+
+| IT             |
++----------------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department from employee group by emp_department having avg(emp_salary)>70000;
++----------------+
+| emp_department |
++----------------+
+| HR             |
+| IT             |
+| CSD            |
++----------------+
+3 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department from employee group by department order by avg(emp_salary);
+ERROR: 1054: Unknown column 'department' in 'group statement'
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department from employee group by department order by avg(emp_salary) ASC;
+ERROR: 1054: Unknown column 'department' in 'group statement'
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department from employee group by emp_department order by avg(emp_salary) ASC;
++----------------+
+| emp_department |
++----------------+
+| CSE            |
+| HR             |
+| IT             |
+| CSD            |
++----------------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department avg(emp_salary) as avg_salary from employee group by emp_department order by avg(emp_salary) ASC;
+ERROR: 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(emp_salary) as avg_salary from employee group by emp_department order by avg(em' at line 1
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_department, avg(emp_salary) as avg_salary from employee group by emp_department order by avg(emp_salary) ASC;
++----------------+------------+
+| emp_department | avg_salary |
++----------------+------------+
+| CSE            |      69500 |
+| HR             |      71500 |
+| IT             |     349333 |
+| CSD            |   10000000 |
++----------------+------------+
+4 rows in set (0.0007 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_city, count(emp_name) as Number_Of_emp from employee group by emp_department;
+ERROR: 1055: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'rrgi.employee.emp_city' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_city, count(emp_name) as Number_Of_emp from employee group by emp_city;
++----------+---------------+
+| emp_city | Number_Of_emp |
++----------+---------------+
+| Delhi    |             2 |
+| Lucknow  |             2 |
+| Hydrabad |             1 |
+| Sitapur  |             1 |
+| Jaunpur  |             1 |
+| Ballia   |             1 |
++----------+---------------+
+6 rows in set (0.0008 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL > select emp_city from employee group by emp_city having count(emp_name)>1;
++----------+
+| emp_city |
++----------+
+| Delhi    |
+| Lucknow  |
++----------+
+2 rows in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  rrgi  SQL >

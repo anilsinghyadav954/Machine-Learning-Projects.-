@@ -1,0 +1,5 @@
+1.Create a method to check number is even or odd
+2.Create a function to check a number is prime or not
+3.WAF to find the factorial of a number
+4.WAF to find the sum of first n natural number
+5.Function to performe arithmetic operation using match

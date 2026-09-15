@@ -1,0 +1,18 @@
+Pandas->> python library(use for analysis and data manipulation)
+
+2 main data structure -->>
+         a. Series-->1-D data
+         b. DataFrame-->2-D table
+
+>>How to install...
+   1. python -m pip install Pandas
+
+   OR
+
+   2.py -m pip install Pandas
+
+
+>>>How to import....
+     import pandas as pd 
+
+                 

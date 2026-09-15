@@ -1,0 +1,40 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS D:\TrainningSem_7\Assignment-5-MySQL> git init
+Initialized empty Git repository in D:/TrainningSem_7/Assignment-5-MySQL/.git/
+PS D:\TrainningSem_7\Assignment-5-MySQL> git add .
+PS D:\TrainningSem_7\Assignment-5-MySQL> git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   Assignment-5_SQL-1.pdf
+        new file:   Assignment_5.sql
+        new file:   Assignment_5_Solutions_Corrected.pdf
+        new file:   Assignment_5_Terminal.txt
+        new file:   MySQL_Complete_Project_Notes_Assignment_5.pdf
+
+PS D:\TrainningSem_7\Assignment-5-MySQL> git commit -m "Add MySQL Assignment 5"
+[master (root-commit) d8613a3] Add MySQL Assignment 5
+ 5 files changed, 986 insertions(+)
+ create mode 100644 Assignment-5_SQL-1.pdf
+ create mode 100644 Assignment_5.sql
+ create mode 100644 Assignment_5_Solutions_Corrected.pdf
+ create mode 100644 Assignment_5_Terminal.txt
+ create mode 100644 MySQL_Complete_Project_Notes_Assignment_5.pdf
+PS D:\TrainningSem_7\Assignment-5-MySQL> git remote add origin https://github.com/kumarun415/Assignment-5-MySQL.git
+PS D:\TrainningSem_7\Assignment-5-MySQL> git branch -M main
+PS D:\TrainningSem_7\Assignment-5-MySQL> git push -u origin main
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (7/7), done.
+Writing objects: 100% (7/7), 209.29 KiB | 26.16 MiB/s, done.
+Total 7 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/kumarun415/Assignment-5-MySQL.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+PS D:\TrainningSem_7\Assignment-5-MySQL>

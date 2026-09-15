@@ -1,0 +1,1 @@
+1.Pass tuple and list as a function parameter and traverse them
